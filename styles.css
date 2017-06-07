@@ -1,0 +1,30 @@
+#cardbox {
+	display: inline-block;
+	background-color: white;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	border-radius: 5px;
+	text-align: center;
+	width: 90%;
+	margin: 5%;
+}
+.card {
+	display: inline-block;
+	width: 47%;
+	height: 300px;
+	margin: 1%;
+	border-style: solid;
+	border-color: black;
+	border-width: 2px;
+	border-radius: 5px;
+}
+.left-card {
+	float: left;
+	background-color: blue;
+}
+
+.right-card {
+	float: right;
+	background-color: red;
+}
