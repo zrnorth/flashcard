@@ -16,6 +16,7 @@
   "homepage": "https://github.com/zrnorth/flashcard#readme",
   "dependencies": {
     "express": "^4.15.3",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "pg-promise": "^5.9.3"
   }
 }
