@@ -2,5 +2,5 @@ working on the db atm
 ```
 npm install
 postgres -D /usr/local/var/postgres  (psql to connect in term)
-node controller.js
+node postgres_test.js
 ```

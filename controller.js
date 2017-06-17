@@ -1,8 +1,5 @@
 const db = require('./postgres.js');
 
-db.selectAllRows();
-db.closeConnection();
-
 exports.newCard = function(front, back) {
 	// find the difficulty rating of the new card and then add it to the db. return succ/fail
 }
