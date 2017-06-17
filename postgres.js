@@ -1,42 +1,29 @@
 const pgp = require('pg-promise')()
 const postgres = pgp('postgres://znorth:@localhost:5432/test')
 
-exports.selectAllRows = function() {
-	postgres.any('SELECT * FROM cards')
-	  .then(function (data) {
-	    console.log('DATA:', data);
-	  })
-	  .catch(function (error) {
-	    console.log('ERROR:', error);
-	  });
+exports.selectAllRowsDebug = function() {
+	return postgres.any('SELECT * FROM cards');
 };
 
 exports.getTodaysCards = function() {
-	postgres.any('SELECT * FROM cards WHERE NEXT_REVIEW = CURRENT_DATE')
-	  .then(function(data) {
-	  	console.log('Todays cards: ', data);
-	  })
-	  .catch(function(error) {
-	  	console.log('error getting todays cards');
-	  });
+	return postgres.any('SELECT * FROM cards WHERE NEXT_REVIEW = CURRENT_DATE');
 };
 
 exports.addCard = function(front, back, difficulty) {
-	postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY) VALUES($1, $2, CURRENT_DATE, $3) RETURNING ID', [front, back, difficulty])
-	  .then(function(data) {
-	  	return data.id;
-	  })
-	  .catch(function(error) {
-	  	console.log('Error inserting a row: ', error);
-	  });
+	return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES($1, $2, CURRENT_DATE, $3, $4) RETURNING ID', 
+      [front, back, difficulty, 0]);
 };
 
-exports.updateCard = function(id, difficulty, review_date) {
-	postgres.none('UPDATE cards SET DIFFICULTY=$1, NEXT_REVIEW=$2 WHERE ID=$3', [difficulty, review_date, id])
+exports.getCard = function(id) {
+	return postgres.one('SELECT FROM cards WHERE ID=$1', [id]);
+}
+
+exports.updateCard = function(id, difficulty, review_date, reps) {
+	return postgres.none('UPDATE cards SET DIFFICULTY=$1, NEXT_REVIEW=$2, REPS=$3 WHERE ID=$4', [difficulty, review_date, reps, id]);
 };
 
 exports.deleteCard = function(id) {
-	postgres.none('DELETE FROM cards WHERE ID=$1', [id]);
+	return postgres.none('DELETE FROM cards WHERE ID=$1', [id]);
 };
 
 // not required, but good to do if you don't want to wait for 30sec for auto-timeout.
@@ -49,6 +36,7 @@ create table cards(
 	FRONT		TEXT					NOT NULL,
 	BACK		TEXT					NOT NULL,
 	NEXT_REVIEW	DATE					NOT NULL,
-	DIFFICULTY	REAL 					NOT NULL
+	DIFFICULTY	REAL 					NOT NULL,
+	REPS		INT 					NOT NULL
 );
 */
