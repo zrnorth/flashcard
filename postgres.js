@@ -15,7 +15,7 @@ exports.addCard = function(front, back, difficulty) {
 };
 
 exports.getCard = function(id) {
-	return postgres.one('SELECT FROM cards WHERE ID=$1', [id]);
+	return postgres.one('SELECT * FROM cards WHERE ID=$1', [id]);
 }
 
 exports.updateCard = function(id, difficulty, review_date, reps) {
