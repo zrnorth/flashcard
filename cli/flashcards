@@ -65,7 +65,7 @@ program
 	});
 
 program
-	.command('delete [front-side]')
+	.command('delete [front]')
 	.description('delete a flashcard with the given front side')
 	.action(function() {
 		console.log('not yet implemented');
