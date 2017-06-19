@@ -14,6 +14,10 @@ exports.newCard = function(front, back) {
 	});
 }
 
+exports.deleteCard = function(id) {
+	return db.deleteCard(id);
+}
+
 exports.logReview = function(id, responseQuality) {
 	db.getCard(id).then(function(card) {
 		// If the review was correct, update the card's correct reps and difficulty in the db.

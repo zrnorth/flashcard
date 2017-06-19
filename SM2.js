@@ -16,7 +16,7 @@ exports.getUpdatedDifficulty = function(oldDifficulty, responseQuality) {
 
 exports.getDaysUntilNextReview = function(reps, difficulty) {
 	// if I(reps) == interval until next review,
-	// I(0) == 0
+	// I(0) == 0 -- this is not in the official alg, but i added it. requires 2 correct reviews on first day
 	// I(1) == 1
 	// I(2) == 6
 	// n>2: I(n) == I(n-1) * difficulty.
@@ -24,6 +24,7 @@ exports.getDaysUntilNextReview = function(reps, difficulty) {
 	if (reps < 0) {
 		throw 'Number of reps must be positive';
 	}
+	difficulty = round(difficulty, 6); // dealing with weird js decimal bullshit
 	if (difficulty < 1.3 || difficulty > 2.5) {
 		throw 'Difficulty rating must be between [1.3, 2.5]';
 	}
