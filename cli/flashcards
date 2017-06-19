@@ -1,0 +1,39 @@
+#!/usr/bin/env node
+var program = require('commander');
+var controller = require('../controller.js');
+
+var getNumReviews = function(options) {
+	controller.getTodaysCards().then(function(cards) {
+		console.log('There are ' + cards.length + ' cards to review.');
+	});
+}
+
+program
+	.command('reviews')
+	.alias('r')
+	.description('list the number of reviews for today')
+	.action(getNumReviews);
+
+program
+	.command('start')
+	.alias('go')
+	.description('start reviewing flashcards')
+	.action(function() {
+		console.log('not yet implemented');
+	});
+
+program
+	.command('new [front] [back]')
+	.description('make a new flashcard')
+	.action(function() {
+		console.log('not yet implemented');
+	});
+
+program
+	.command('delete [front-side]')
+	.description('delete a flashcard with the given front side')
+	.action(function() {
+		console.log('not yet implemented');
+	});
+	
+program.parse(process.argv);
