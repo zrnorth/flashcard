@@ -22,6 +22,10 @@ exports.updateCard = function(id, difficulty, review_date, reps) {
 	return postgres.none('UPDATE cards SET DIFFICULTY=$1, NEXT_REVIEW=$2, REPS=$3 WHERE ID=$4', [difficulty, review_date, reps, id]);
 };
 
+exports.resetForgottenCard = function(id) {
+	return postgres.none('UPDATE cards SET REPS=0, NEXT_REVIEW = CURRENT_DATE where ID=$1', [id]);
+}
+
 exports.deleteCard = function(id) {
 	return postgres.none('DELETE FROM cards WHERE ID=$1', [id]);
 };

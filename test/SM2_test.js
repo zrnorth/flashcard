@@ -14,8 +14,8 @@ for (var diff = 1.3; diff <= 2.5; diff += 0.1) {
 }
 */
 
-/* getDaysUntilNextReview test
-for (var diff = 1.0; diff < 2.7; diff += 0.2) {
+// getDaysUntilNextReview test
+for (var diff = 1.0; diff < 2.7; diff += 0.1) {
 	for (var reps = 0; reps < 20; reps++) {
 		console.log('run: ', run);
 		run++;
@@ -30,4 +30,3 @@ for (var diff = 1.0; diff < 2.7; diff += 0.2) {
 		}
 	}
 }
-*/

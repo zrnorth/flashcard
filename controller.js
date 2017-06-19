@@ -16,12 +16,18 @@ exports.newCard = function(front, back) {
 
 exports.logReview = function(id, responseQuality) {
 	db.getCard(id).then(function(card) {
-		var difficulty = SM2.getUpdatedDifficulty(card.difficulty, responseQuality);
+		// If the review was correct, update the card's correct reps and difficulty in the db.
+		if (responseQuality >= 3) {
+			var difficulty = SM2.getUpdatedDifficulty(card.difficulty, responseQuality);
+			var today = new Date();
+			var nextReviewDate = today.addDays(SM2.getDaysUntilNextReview(card.reps, difficulty));
 
-		var today = new Date();
-		var nextReviewDate = today.addDays(SM2.getDaysUntilNextReview(card.reps, difficulty));
-
-		db.updateCard(id, difficulty, nextReviewDate, card.reps + 1);
+			db.updateCard(id, difficulty, nextReviewDate, card.reps + 1);
+		}
+		// If it was incorrect, reset the number of reps, leaving the difficulty the same.
+		else {
+			db.resetForgottenCard(id);
+		}
 	});
 }
 
