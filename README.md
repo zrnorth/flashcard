@@ -1,6 +1,10 @@
-working on the db atm
+working on the db atm.
+First: `npm install`.
+
+To start a local db for development, in seperate tabs run:
 ```
-npm install
-postgres -D /usr/local/var/postgres  (psql to connect in term)
-node postgres_test.js
+postgres -D /usr/local/var/postgres
+psql
 ```
+
+Run code in the `test` dir to test out db functions.
