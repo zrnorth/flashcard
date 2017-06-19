@@ -1,26 +1,61 @@
 #!/usr/bin/env node
 var program = require('commander');
+var co = require('co');
+var prompt = require('co-prompt');
+// So the foreach's can be used with co
+var forEach = require('co-foreach');
+
 var controller = require('../controller.js');
 
-var getNumReviews = function(options) {
+// CLI command implementations
+var reviews = function(options) {
 	controller.getTodaysCards().then(function(cards) {
 		console.log('There are ' + cards.length + ' cards to review.');
 	});
 }
 
+var start = function(options) {
+	controller.getTodaysCards().then(function(cards) {
+		console.log('Reviewing ' + cards.length + ' cards.');
+		var responseQualityReminderString = 'Response quality reminder: \n';
+		responseQualityReminderString += '5 - perfect response\n';
+		responseQualityReminderString += '4 - correct response after a hesitation\n';
+		responseQualityReminderString += '3 - correct response recalled with serious difficulty\n';
+		responseQualityReminderString += '2 - incorrect response; where the correct one seemed easy to recall\n';
+		responseQualityReminderString += '1 - incorrect response; the correct one remembered\n';
+		responseQualityReminderString += '0 - complete blackout\n';
+		console.log(responseQualityReminderString)
+		co(function*() {
+			for (var i = 0; i < cards.length; i++) {
+				const card = cards[i];
+				console.log('Card #' + (i+1) + ':');
+				console.log('Front: ' + card.front);
+				yield prompt('Press enter to flip.');
+
+				console.log('Back: ' + card.back);
+				var responseQuality = yield prompt('What was your response quality? ');
+
+				controller.logReview(card.id, responseQuality);
+				console.log('Logged response');
+			}
+			console.log('All done.');
+			process.exit(0);
+		});
+	});
+}
+
+// CLI command parsing
 program
 	.command('reviews')
 	.alias('r')
 	.description('list the number of reviews for today')
-	.action(getNumReviews);
+	.action(reviews);
 
 program
 	.command('start')
 	.alias('go')
 	.description('start reviewing flashcards')
-	.action(function() {
-		console.log('not yet implemented');
-	});
+	.action(start);
 
 program
 	.command('new [front] [back]')
