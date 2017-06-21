@@ -1,17 +1,36 @@
 #!/usr/bin/env node
 var program = require('commander');
-var co = require('co');
-var prompt = require('co-prompt');
-// So the foreach's can be used with co
-var forEach = require('co-foreach');
+var Promise = require('bluebird');
+var inquirer = require('inquirer');
 
 var controller = require('../controller.js');
 
 // CLI command implementations
+
 var count = function(options) {
     controller.getTodaysCards().then(function(cards) {
         console.log('There are ' + cards.length + ' cards to review.');
     });
+}
+
+var promptCard = function(card) {
+    var q = [
+        {
+            type: 'confirm',
+            name: 'front',
+            message: card.front + '\nPress enter to flip.'
+        },
+        {
+            type: 'list',
+            name: 'responseQuality',
+            message: card.back + '\nWhat was your response score?',
+            choices: [ '0', '1', '2', '3', '4', '5' ]
+        }
+    ];
+    return inquirer.prompt(q).then(function(answers) {
+        controller.logReview(card.id, answers.responseQuality);
+        console.log('Logged the review');
+    })
 }
 
 var start = function(options) {
@@ -30,21 +49,11 @@ var start = function(options) {
  *  1 - incorrect response; the correct one remembered
  *  0 - complete blackout`;
         console.log(responseQualityReminderString)
-        co(function*() {
-            for (var i = 0; i < cards.length; i++) {
-                const card = cards[i];
-                console.log('Card #' + (i+1) + ':');
-                console.log('Front: ' + card.front);
-                yield prompt('Press enter to flip.');
 
-                console.log('Back: ' + card.back);
-                var responseQuality = yield prompt('What was your response quality? ');
-
-                controller.logReview(card.id, responseQuality);
-                console.log('Logged response');
-            }
-            console.log('All done.');
-            process.exit(0);
+        Promise.reduce(cards, function(i, card) {
+            return promptCard(card);
+        }, 0).then(function() {
+            console.log('All done!');
         });
     });
 }

@@ -8,6 +8,16 @@ Date.prototype.addDays = function(days) {
     return d;
 }
 
+// Helper to get a Date object rounded to current day(no hours, seconds, etc)
+var simpleToday = function() {
+    var today = new Date();
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    today.setMilliseconds(0);
+    return today;
+}
+
 exports.newCard = function(front, back) {
     return db.addCard(front, back, 2.5).then(function(data) {
         return data.id;
@@ -19,18 +29,18 @@ exports.deleteCard = function(id) {
 }
 
 exports.logReview = function(id, responseQuality) {
-    db.getCard(id).then(function(card) {
+    return db.getCard(id).then(function(card) {
         // If the review was correct, update the card's correct reps and difficulty in the db.
         if (responseQuality >= 3) {
             var difficulty = SM2.getUpdatedDifficulty(card.difficulty, responseQuality);
-            var today = new Date();
+            var today = simpleToday();
             var nextReviewDate = today.addDays(SM2.getDaysUntilNextReview(card.reps, difficulty));
 
-            db.updateCard(id, difficulty, nextReviewDate, card.reps + 1);
+            return db.updateCard(id, difficulty, nextReviewDate, card.reps + 1);
         }
         // If it was incorrect, reset the number of reps, leaving the difficulty the same.
         else {
-            db.resetForgottenCard(id);
+            return db.resetForgottenCard(id);
         }
     });
 }
