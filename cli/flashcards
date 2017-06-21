@@ -8,7 +8,7 @@ var forEach = require('co-foreach');
 var controller = require('../controller.js');
 
 // CLI command implementations
-var reviews = function(options) {
+var count = function(options) {
 	controller.getTodaysCards().then(function(cards) {
 		console.log('There are ' + cards.length + ' cards to review.');
 	});
@@ -16,6 +16,10 @@ var reviews = function(options) {
 
 var start = function(options) {
 	controller.getTodaysCards().then(function(cards) {
+		if (cards.length === 0) {
+			console.log('No cards to review.');
+			process.exit(0);
+		}
 		console.log('Reviewing ' + cards.length + ' cards.');
 		var responseQualityReminderString = 'Response quality reminder: \n';
 		responseQualityReminderString += '5 - perfect response\n';
@@ -46,10 +50,10 @@ var start = function(options) {
 
 // CLI command parsing
 program
-	.command('reviews')
-	.alias('r')
+	.command('count')
+	.alias('ls')
 	.description('list the number of reviews for today')
-	.action(reviews);
+	.action(count);
 
 program
 	.command('start')
@@ -72,3 +76,7 @@ program
 	});
 	
 program.parse(process.argv);
+// If no command specified, show the help information
+if (program.args.length === 0) {
+	program.help();
+}
