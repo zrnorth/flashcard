@@ -9,74 +9,75 @@ var controller = require('../controller.js');
 
 // CLI command implementations
 var count = function(options) {
-	controller.getTodaysCards().then(function(cards) {
-		console.log('There are ' + cards.length + ' cards to review.');
-	});
+    controller.getTodaysCards().then(function(cards) {
+        console.log('There are ' + cards.length + ' cards to review.');
+    });
 }
 
 var start = function(options) {
-	controller.getTodaysCards().then(function(cards) {
-		if (cards.length === 0) {
-			console.log('No cards to review.');
-			process.exit(0);
-		}
-		console.log('Reviewing ' + cards.length + ' cards.');
-		var responseQualityReminderString = 'Response quality reminder: \n';
-		responseQualityReminderString += '5 - perfect response\n';
-		responseQualityReminderString += '4 - correct response after a hesitation\n';
-		responseQualityReminderString += '3 - correct response recalled with serious difficulty\n';
-		responseQualityReminderString += '2 - incorrect response; where the correct one seemed easy to recall\n';
-		responseQualityReminderString += '1 - incorrect response; the correct one remembered\n';
-		responseQualityReminderString += '0 - complete blackout\n';
-		console.log(responseQualityReminderString)
-		co(function*() {
-			for (var i = 0; i < cards.length; i++) {
-				const card = cards[i];
-				console.log('Card #' + (i+1) + ':');
-				console.log('Front: ' + card.front);
-				yield prompt('Press enter to flip.');
+    controller.getTodaysCards().then(function(cards) {
+        if (cards.length === 0) {
+            console.log('No cards to review.');
+            process.exit(0);
+        }
+        console.log('Reviewing ' + cards.length + ' cards.');
+        const responseQualityReminderString = 
+`Response quality reminder:
+ *  5 - perfect response
+ *  4 - correct response after a hesitation
+ *  3 - correct response recalled with serious difficulty
+ *  2 - incorrect response; where the correct one seemed easy to recall
+ *  1 - incorrect response; the correct one remembered
+ *  0 - complete blackout`;
+        console.log(responseQualityReminderString)
+        co(function*() {
+            for (var i = 0; i < cards.length; i++) {
+                const card = cards[i];
+                console.log('Card #' + (i+1) + ':');
+                console.log('Front: ' + card.front);
+                yield prompt('Press enter to flip.');
 
-				console.log('Back: ' + card.back);
-				var responseQuality = yield prompt('What was your response quality? ');
+                console.log('Back: ' + card.back);
+                var responseQuality = yield prompt('What was your response quality? ');
 
-				controller.logReview(card.id, responseQuality);
-				console.log('Logged response');
-			}
-			console.log('All done.');
-			process.exit(0);
-		});
-	});
+                controller.logReview(card.id, responseQuality);
+                console.log('Logged response');
+            }
+            console.log('All done.');
+            process.exit(0);
+        });
+    });
 }
 
 // CLI command parsing
 program
-	.command('count')
-	.alias('ls')
-	.description('list the number of reviews for today')
-	.action(count);
+    .command('count')
+    .alias('ls')
+    .description('list the number of reviews for today')
+    .action(count);
 
 program
-	.command('start')
-	.alias('go')
-	.description('start reviewing flashcards')
-	.action(start);
+    .command('start')
+    .alias('go')
+    .description('start reviewing flashcards')
+    .action(start);
 
 program
-	.command('new [front] [back]')
-	.description('make a new flashcard')
-	.action(function() {
-		console.log('not yet implemented');
-	});
+    .command('new [front] [back]')
+    .description('make a new flashcard')
+    .action(function() {
+        console.log('not yet implemented');
+    });
 
 program
-	.command('delete [front]')
-	.description('delete a flashcard with the given front side')
-	.action(function() {
-		console.log('not yet implemented');
-	});
-	
+    .command('delete [front]')
+    .description('delete a flashcard with the given front side')
+    .action(function() {
+        console.log('not yet implemented');
+    });
+    
 program.parse(process.argv);
 // If no command specified, show the help information
 if (program.args.length === 0) {
-	program.help();
+    program.help();
 }

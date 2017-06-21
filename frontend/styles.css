@@ -1,27 +1,30 @@
 #cardbox {
-	background-color: white;
-	border-style: solid;
-	border-color: black;
-	border-width: 2px;
-	text-align: center;
-	width: 90%;
-	max-width: 850px;
-	margin: auto;
+    background-color: white;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    text-align: center;
+    width: 90%;
+    max-width: 850px;
+    margin: auto;
 }
 .card {
-	display: inline-block;		
-	width: 96%;
-	max-width: 800px;
-	margin-bottom: 2%;
-	height: 300px;
-	border-style: solid;
-	border-color: black;
-	border-width: 2px;
-	border-radius: 5px;
+    display: inline-block;        
+    width: 96%;
+    max-width: 800px;
+    margin-bottom: 2%;
+    height: 300px;
+    border-style: solid;
+    border-color: black;
+    border-width: 2px;
+    border-radius: 5px;
 }
 #card-front {
-	background-color: green;
+    background-color: green;
 }
 #card-back {
-	background-color: red;
+    background-color: red;
+}
+#refresh-cards {
+    margin-bottom: 20px;
 }

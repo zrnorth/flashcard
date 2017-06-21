@@ -1,8 +1,13 @@
 const db = require('../postgres.js');
 
-// Add postgres calls here
-
+/*
 db.updateCard(7, 1.2, new Date(), 1).then(function() {
-	console.log('done');
-	db.closeConnection();
+    console.log('done');
+    db.closeConnection();
+}); */
+
+db.getTodaysCards().then(function(cards) {
+    console.log(cards);
 });
+
+db.resetForgottenCard(2);
