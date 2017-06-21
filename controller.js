@@ -28,6 +28,14 @@ exports.deleteCard = function(id) {
     return db.deleteCard(id);
 }
 
+exports.deleteCardByFront = function(front) {
+    return db.getCardByFront(front).then(function(cards) {
+        if (cards.length > 0) { // just delete the first one you find for now
+            return db.deleteCard(cards[0].id);
+        }
+    });
+}
+
 exports.logReview = function(id, responseQuality) {
     return db.getCard(id).then(function(card) {
         // If the review was correct, update the card's correct reps and difficulty in the db.

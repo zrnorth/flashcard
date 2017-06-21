@@ -1,18 +1,11 @@
 #!/usr/bin/env node
+var inquirer = require('inquirer');
 var program = require('commander');
 var Promise = require('bluebird');
-var inquirer = require('inquirer');
 
 var controller = require('../controller.js');
 
-// CLI command implementations
-
-var count = function(options) {
-    controller.getTodaysCards().then(function(cards) {
-        console.log('There are ' + cards.length + ' cards to review.');
-    });
-}
-
+// Helper for start()
 var promptCard = function(card) {
     var q = [
         {
@@ -31,6 +24,13 @@ var promptCard = function(card) {
         controller.logReview(card.id, answers.responseQuality);
         console.log('Logged the review');
     })
+}
+
+// CLI command implementations
+var count = function(options) {
+    controller.getTodaysCards().then(function(cards) {
+        console.log('There are ' + cards.length + ' cards to review.');
+    });
 }
 
 var start = function(options) {
@@ -58,6 +58,34 @@ var start = function(options) {
     });
 }
 
+var newCard = function(options) {
+    // todo: take a filename.
+    if (!options.front || !options.back) {
+        console.error('error: need both a front and a back to add a new card.');
+        return;
+    }
+
+    controller.newCard(options.front, options.back).then(function() {
+        console.log('Added card to db.');
+    });
+}
+
+var deleteCard = function(options) {
+    if (!options.front) {
+        console.error('error: need a card to delete.');
+        return;
+    }
+
+    controller.deleteCardByFront(options.front).then(function(ret) {
+        if (ret === undefined) {
+            console.log('card did not exist.');
+        }
+        else {
+            console.log('deleted card.');
+        }
+    });
+}
+
 // CLI command parsing
 program
     .command('count')
@@ -72,18 +100,17 @@ program
     .action(start);
 
 program
-    .command('new [front] [back]')
+    .command('new')
+    .option('-f, --front [front]', 'Text for the front of the card')
+    .option('-b, --back [back]', 'Text for the back of the card')
     .description('make a new flashcard')
-    .action(function() {
-        console.log('not yet implemented');
-    });
+    .action(newCard);
 
 program
-    .command('delete [front]')
+    .command('delete')
+    .option('-f --front [front]', 'Text on the front side of the card you wish to delete')
     .description('delete a flashcard with the given front side')
-    .action(function() {
-        console.log('not yet implemented');
-    });
+    .action(deleteCard);
     
 program.parse(process.argv);
 // If no command specified, show the help information

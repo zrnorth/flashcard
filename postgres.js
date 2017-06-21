@@ -36,6 +36,11 @@ exports.getCard = function(id) {
         .finally(pgp.end());
 };
 
+exports.getCardByFront = function(front) {
+    return postgres.any('SELECT * FROM cards where FRONT=$1', [front])
+        .finally(pgp.end());
+}
+
 exports.updateCard = function(id, difficulty, review_date, reps) {
     return postgres.none('UPDATE cards SET DIFFICULTY=$1, NEXT_REVIEW=$2, REPS=$3 WHERE ID=$4', [difficulty, review_date, reps, id])
         .finally(pgp.end());
