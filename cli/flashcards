@@ -5,55 +5,81 @@ var Promise = require('bluebird');
 
 var controller = require('../controller.js');
 
-// Helper for start()
-var promptCard = function(card) {
+// Helper for reviewCards()
+var promptCard = function(index, card) {
     var q = [
         {
             type: 'confirm',
             name: 'front',
-            message: card.front + '\nPress enter to flip.'
+            message: 'Card #' + index + '\nFRONT: ' + card.front + '\nPress enter to flip.'
         },
         {
             type: 'list',
             name: 'responseQuality',
-            message: card.back + '\nWhat was your response score?',
-            choices: [ '0', '1', '2', '3', '4', '5' ]
+            message: 'BACK: ' + card.back + '\nWhat was your response score?',
+            choices: [
+                {
+                    name: '0 - complete blackout',
+                    value: 0
+                },
+                {
+                    name: '1 - incorrect response; the correct one remembered',
+                    value: 1
+                },
+                {
+                    name: '2 - incorrect response; where the correct one seemed easy to recall',
+                    value: 2
+                },
+                {
+                    name: '3 - correct response recalled with serious difficulty',
+                    value: 3
+                },
+                {
+                    name: '4 - correct response after a hesitation',
+                    value: 4
+                },
+                {
+                    name: '5 - perfect response',
+                    value: 5
+                }
+            ]
         }
     ];
     return inquirer.prompt(q).then(function(answers) {
         controller.logReview(card.id, answers.responseQuality);
-        console.log('Logged the review');
-    })
+        console.log('\n');
+        return ++index;
+    });
 }
 
 // CLI command implementations
 var count = function(options) {
-    controller.getTodaysCards().then(function(cards) {
-        console.log('There are ' + cards.length + ' cards to review.');
+    return controller.getTodaysCards().then(function(cards) {
+        switch(cards.length) {
+            case 0:
+                console.log('There are no cards to review.');
+                return 0;
+            case 1:
+                console.log('There is 1 card to review.');
+                return 1;
+            default:
+                console.log('There are ' + cards.length + ' cards to review.');
+                return cards.length;
+        }
     });
 }
 
-var start = function(options) {
-    controller.getTodaysCards().then(function(cards) {
+var reviewCards = function(options) {
+    return controller.getTodaysCards().then(function(cards) {
         if (cards.length === 0) {
             console.log('No cards to review.');
             process.exit(0);
         }
-        console.log('Reviewing ' + cards.length + ' cards.');
-        const responseQualityReminderString = 
-`Response quality reminder:
- *  5 - perfect response
- *  4 - correct response after a hesitation
- *  3 - correct response recalled with serious difficulty
- *  2 - incorrect response; where the correct one seemed easy to recall
- *  1 - incorrect response; the correct one remembered
- *  0 - complete blackout`;
-        console.log(responseQualityReminderString)
-
-        Promise.reduce(cards, function(i, card) {
-            return promptCard(card);
-        }, 0).then(function() {
-            console.log('All done!');
+        console.log('Reviewing ' + cards.length + ' cards.\n');
+        Promise.reduce(cards, function(index, card) {
+            return promptCard(index, card);
+        }, 1).then(function() {
+            console.log('All done with this round!');
         });
     });
 }
@@ -65,7 +91,7 @@ var newCard = function(options) {
         return;
     }
 
-    controller.newCard(options.front, options.back).then(function() {
+    return controller.newCard(options.front, options.back).then(function() {
         console.log('Added card to db.');
     });
 }
@@ -76,7 +102,7 @@ var deleteCard = function(options) {
         return;
     }
 
-    controller.deleteCardByFront(options.front).then(function(ret) {
+    return controller.deleteCardByFront(options.front).then(function(ret) {
         if (ret === undefined) {
             console.log('card did not exist.');
         }
@@ -97,7 +123,7 @@ program
     .command('start')
     .alias('go')
     .description('start reviewing flashcards')
-    .action(start);
+    .action(reviewCards);
 
 program
     .command('new')
