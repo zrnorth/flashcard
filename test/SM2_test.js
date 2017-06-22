@@ -1,4 +1,4 @@
-var SM2 = require('../SM2.js')
+var SM2 = require('../helpers/SM2.js')
 var run = 1;
 
 /* getUpdatedDifficulty test

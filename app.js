@@ -5,7 +5,7 @@ const path = require('path')
 app.use(express.static(__dirname+'/frontend'));
 
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname+'/frontend/index.html'));
+    res.sendFile(path.join(__dirname+'/views/index.html'));
 })
 
 app.get('/cards', function(req, res) {

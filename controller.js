@@ -1,5 +1,5 @@
-const db = require('./postgres.js');
-const SM2 = require('./SM2.js');
+const db = require('./helpers/postgres.js');
+const SM2 = require('./helpers/SM2.js');
 
 // Helper to add days correctly to a js Date object (https://stackoverflow.com/a/563442)
 Date.prototype.addDays = function(days) {
