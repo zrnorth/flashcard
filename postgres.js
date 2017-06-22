@@ -26,10 +26,22 @@ exports.getTodaysCards = function() {
 };
 
 exports.addCard = function(front, back, difficulty) {
-    return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES($1, $2, CURRENT_DATE, $3, $4) RETURNING ID', 
-      [front, back, difficulty, 0])
+    return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES($1, $2, CURRENT_DATE, $3, 0) RETURNING ID', 
+      [front, back, difficulty])
         .finally(pgp.end());
 };
+
+exports.addCards = function(cards) {
+    return postgres.tx(function(t) {
+        var queries = []
+        cards.forEach(function(card) {
+            var q = t.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES ($1, $2, CURRENT_DATE, 2.5, 0) RETURNING ID',
+                [card.front, card.back]); // No custom difficulty in bulk adding! Too annoying to do
+            queries.push(q);
+        });
+        return t.batch(queries);
+    }).finally(pgp.end());
+}
 
 exports.getCard = function(id) {
     return postgres.one('SELECT * FROM cards WHERE ID=$1', [id])

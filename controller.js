@@ -24,6 +24,16 @@ exports.newCard = function(front, back) {
     });
 }
 
+exports.newCards = function(cards) {
+    return db.addCards(cards).then(function(data) {
+        var ids = [];
+        data.forEach(function(item) {
+            ids.push(item.id);
+        });
+        return ids;
+    });
+}
+
 exports.deleteCard = function(id) {
     return db.deleteCard(id);
 }

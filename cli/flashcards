@@ -1,5 +1,7 @@
 #!/usr/bin/env node
+var csv = require('fast-csv');
 var inquirer = require('inquirer');
+var fs = require('fs');
 var program = require('commander');
 var Promise = require('bluebird');
 
@@ -85,15 +87,34 @@ var reviewCards = function(options) {
 }
 
 var newCard = function(options) {
-    // todo: take a filename.
-    if (!options.front || !options.back) {
-        console.error('error: need both a front and a back to add a new card.');
+    if (options.csv) {
+        var cards = [];
+        csv
+        .fromPath(options.csv)
+        .on('data', function(line) {
+            cards.push({
+                front: line[0],
+                back: line[1]
+            });
+        })
+        .on('end', function() {
+            console.log('Got cards to add:');
+            console.log(cards);
+        });
+        
+        return controller.newCards(cards).then(function(ids) {
+            console.log('Added ' + ids.length + ' cards from csv ' + options.csv + ' to db.')
+        });
+    }
+    else if (options.front && options.back) {
+        return controller.newCard(options.front, options.back).then(function() {
+            console.log('Added card { front: \'' + options.front + '\', back: \'' + options.back + '\'} to db.');
+        });
+    }
+    else {
+        program.help();
         return;
     }
-
-    return controller.newCard(options.front, options.back).then(function() {
-        console.log('Added card to db.');
-    });
 }
 
 var deleteCard = function(options) {
@@ -129,7 +150,8 @@ program
     .command('new')
     .option('-f, --front [front]', 'Text for the front of the card')
     .option('-b, --back [back]', 'Text for the back of the card')
-    .description('make a new flashcard')
+    .option('-c, --csv [filename]', 'Import a list of cards from a CSV')
+    .description('make new flashcard(s)')
     .action(newCard);
 
 program
