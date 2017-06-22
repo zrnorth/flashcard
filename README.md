@@ -6,14 +6,14 @@ postgres -D /usr/local/var/postgres
 psql
 ```
 
-Run code in the `test` dir to test out db functions.
+Test dir is not done yet, doesn't really do anything atm.
 
-CLI stuff is in the `cli` folder. `npm link` to enable it.
+CLI stuff is in the `cli` folder. `npm link` to enable it. All pointed at local postgres atm.
 
 Current commands: 
 ```
-    reviews|r            list the number of reviews for today
+    count|ls             list the number of reviews for today
     start|go             start reviewing flashcards
-    new [front] [back]   make a new flashcard
-    delete [front]       delete a flashcard with the given front side
+    new                  make new flashcard(s), from direct input or a csv
+    delete               delete a flashcard
 ```
