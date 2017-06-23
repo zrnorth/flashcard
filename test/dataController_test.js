@@ -1,4 +1,4 @@
-var controller = require('../controller.js')
+var dataController = require('../data/dataController.js')
 
 // Add controller calls here
 
@@ -18,7 +18,7 @@ var cards = [
     }
 ];
 
-//controller.newCard('test3', 'test3');
-controller.newCards(cards).then(function(data) {
+//dataController.newCard('test3', 'test3');
+dataController.newCards(cards).then(function(data) {
     console.log(data);
 });

@@ -1,0 +1,10 @@
+extends layout
+
+block content
+    h1= title
+    p hi there, welcome to the review page for todays cards.
+    each card in cards
+      li
+        p #{card.front} / #{card.back}
+    else
+      li There are no cards to review.
