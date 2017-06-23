@@ -17,3 +17,7 @@ Current commands:
     new                  make new flashcard(s), from direct input or a csv
     delete               delete a flashcard
 ```
+
+Startup the web server by running `SET DEBUG=flashcard:* & npm run devstart`, then hit `localhost:3000`.
+
+Check `routes/index.js` for routing info.
