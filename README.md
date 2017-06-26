@@ -1,10 +1,23 @@
-First: `npm install`.
+First: `npm install`. You'll need postgres installed: `brew install postgres`
 
 To start a local db for development, in seperate tabs run:
 ```
 postgres -D /usr/local/var/postgres
 psql
 ```
+
+Make a table called cards:
+```
+create table cards(
+    ID              SERIAL PRIMARY KEY      NOT NULL,
+    FRONT           TEXT                    NOT NULL,
+    BACK            TEXT                    NOT NULL,
+    NEXT_REVIEW     DATE                    NOT NULL,
+    DIFFICULTY      REAL                    NOT NULL,
+    REPS            INT                     NOT NULL
+);
+```
+and point `postgres.js` at it.
 
 CLI stuff is in the `cli` folder. `npm link` to enable it. All pointed at local postgres atm.
 
