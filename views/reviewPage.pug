@@ -1,10 +1,15 @@
 extends layout
 
+block head-extras
+    script(src='/js/cards.js')
+
 block content
     h1= title
     p hi there, welcome to the review page for todays cards.
+    p there are #{cards.length} reviews today.
     each card in cards
-      li
-        p #{card.front} / #{card.back}
+      .card-container(id=card.id)
+        .front card ##{card.id}: #{card.front} / #{card.back}
+        .back back
     else
       li There are no cards to review.
