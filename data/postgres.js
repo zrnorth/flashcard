@@ -1,20 +1,17 @@
+const fs = require('fs');
 require('../helpers/dateHelpers.js');
+
 // Set bluebird as the default promise library for pgp.
 const promise = require('bluebird');
+
 const options = {
     promiseLib: promise
-}
-const pgp = require('pg-promise')(options)
+};
+const pgp = require('pg-promise')(options);
 
 // Setup the connection to postgres
-const connection = {
-    host: 'localhost',
-    port: 5432,
-    database: 'test',
-    user: 'znorth',
-    password: ''
-}
-const postgres = pgp(connection)
+const connection = require('./connectionInfo.json');
+const postgres = pgp(connection);
 
 exports.selectAllRowsDebug = function() {
     return postgres.any('SELECT * FROM cards')

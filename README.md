@@ -1,4 +1,8 @@
-First: `npm install`. You'll need postgres installed: `brew install postgres`
+## Local Setup
+
+First: `npm install`. 
+
+You'll need postgres installed: `brew install postgres`
 
 To start a local db for development, in seperate tabs run:
 ```
@@ -17,8 +21,9 @@ create table cards(
     REPS            INT                     NOT NULL
 );
 ```
-and point `postgres.js` at it.
+Finally, make sure your `/data/connectionInfo.json` file has the correct information for your local server. You are good to go!
 
+## CLI
 CLI stuff is in the `cli` folder. `npm link` to enable it. All pointed at local postgres atm.
 
 Current commands: 
@@ -29,10 +34,12 @@ Current commands:
     delete               delete a flashcard
 ```
 
-You can run some simple tests with `npm run test.` 
-
-`npm run populate` creates random cards, `npm run clear` deletes them.
-
+## Webapp
 Startup the web server by running `SET DEBUG=flashcard:* & npm run devstart`, then hit `localhost:3000`.
 
 Check `routes/index.js` for routing info.
+
+## Tests
+You can run some simple tests with `npm run test.` 
+
+`npm run populate` creates random cards, `npm run clear` deletes them.
