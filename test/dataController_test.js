@@ -52,4 +52,4 @@ exports.simpleCrudTest = function() {
             })
         });
     });
-}
+};

@@ -31,6 +31,10 @@ exports.deleteCardByFront = function(front) {
     });
 }
 
+exports.deleteAll = function() {
+    return db.deleteAll();
+}
+
 exports.logReview = function(id, responseQuality) {
     return db.getCard(id).then(function(card) {
         // If the review was correct, update the card's correct reps and difficulty in the db.

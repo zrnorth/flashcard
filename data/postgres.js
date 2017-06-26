@@ -69,6 +69,10 @@ exports.deleteCard = function(id) {
         .finally(pgp.end());
 };
 
+exports.deleteAll = function() {
+    return postgres.none('DELETE FROM cards WHERE ID>0')
+        .finally(pgp.end());
+}
 /*
 create table cards(
     ID              SERIAL PRIMARY KEY      NOT NULL,

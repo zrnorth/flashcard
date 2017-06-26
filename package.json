@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "test": "node ./test/test_all"
+    "test": "node ./test/test_all",
+    "populate": "node ./test/populate",
+    "clear": "node ./test/clear"
   },
   "repository": {
     "type": "git",
