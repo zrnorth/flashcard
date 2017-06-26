@@ -1,5 +1,10 @@
 // SM2 is explained here: https://www.supermemo.com/english/ol/sm2.htm
 
+// helper to round a decimal: http://www.jacklmoore.com/notes/rounding-in-javascript/
+function round(value, decimals) {
+  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
+}
+
 exports.getUpdatedDifficulty = function(oldDifficulty, responseQuality) {
     var newDifficulty =  (oldDifficulty - 0.8) + 
                          (0.28 * responseQuality) - 
@@ -39,9 +44,4 @@ exports.getDaysUntilNextReview = function(reps, difficulty) {
         default: // reps > 2
             return Math.ceil(this.getDaysUntilNextReview((reps - 1), difficulty) * difficulty);
     }
-}
-
-// helper to round a decimal: http://www.jacklmoore.com/notes/rounding-in-javascript/
-function round(value, decimals) {
-  return Number(Math.round(value+'e'+decimals)+'e-'+decimals);
 }

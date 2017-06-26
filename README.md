@@ -6,7 +6,7 @@ postgres -D /usr/local/var/postgres
 psql
 ```
 
-Test dir is not done yet, doesn't really do anything atm.
+You can run some simple tests with `npm test.`
 
 CLI stuff is in the `cli` folder. `npm link` to enable it. All pointed at local postgres atm.
 

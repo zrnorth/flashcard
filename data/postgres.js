@@ -1,3 +1,4 @@
+require('../helpers/dateHelpers.js');
 // Set bluebird as the default promise library for pgp.
 const promise = require('bluebird');
 const options = {
@@ -26,8 +27,8 @@ exports.getTodaysCards = function() {
 };
 
 exports.addCard = function(front, back, difficulty) {
-    return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES($1, $2, CURRENT_DATE, $3, 0) RETURNING ID', 
-      [front, back, difficulty])
+    return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES($1, $2, $3, $4, 0) RETURNING ID', 
+      [front, back, Date.simpleToday(), difficulty])
         .finally(pgp.end());
 };
 
