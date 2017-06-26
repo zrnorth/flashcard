@@ -5,11 +5,16 @@ block head-extras
 
 block content
     h1= title
-    p hi there, welcome to the review page for todays cards.
-    p there are #{cards.length} reviews today.
+    p There are #{cards.length} reviews today.
     each card in cards
-      .card-container(id=card.id)
-        .front card ##{card.id}: #{card.front} / #{card.back}
-        .back back
+      .review-container
+        .card-container()
+          .front card ##{card.id}: #{card.front} / #{card.back}
+          .back back
+        form(method='POST' action='' id=card.id).review
+          h4 Score:
+          each val in [0, 1, 2, 3, 4, 5]
+            button.score-button(value=val) #{val}
+
     else
-      li There are no cards to review.
+      h4 All done! ✔

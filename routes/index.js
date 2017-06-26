@@ -11,4 +11,7 @@ router.get('/', function(req, res, next) {
 /* GET the cards for today. */
 router.get('/todaysCards', viewController.todaysCards);
 
+/* POST a review for a given card */
+router.post('/logReview', viewController.logReview);
+
 module.exports = router;

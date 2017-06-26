@@ -45,3 +45,16 @@ body {
 .flipped .front {
   transform: rotateY(180deg);
 }
+
+.review {
+  visibility: hidden;
+}
+
+.flipped .review {
+  visibility: visible;
+}
+
+.score-button {
+  margin-left: 3px;
+  margin-right: 3px;
+}
