@@ -6,8 +6,6 @@ postgres -D /usr/local/var/postgres
 psql
 ```
 
-You can run some simple tests with `npm test.`
-
 CLI stuff is in the `cli` folder. `npm link` to enable it. All pointed at local postgres atm.
 
 Current commands: 
@@ -17,6 +15,10 @@ Current commands:
     new                  make new flashcard(s), from direct input or a csv
     delete               delete a flashcard
 ```
+
+You can run some simple tests with `npm run test.` 
+
+`npm run populate` creates random cards, `npm run clear` deletes them.
 
 Startup the web server by running `SET DEBUG=flashcard:* & npm run devstart`, then hit `localhost:3000`.
 
