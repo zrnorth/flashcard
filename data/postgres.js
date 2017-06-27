@@ -52,12 +52,12 @@ exports.getCardByFront = function(front) {
 }
 
 exports.updateCard = function(id, difficulty, review_date, reps) {
-    return postgres.none('UPDATE cards SET DIFFICULTY=$1, NEXT_REVIEW=$2, REPS=$3 WHERE ID=$4', [difficulty, review_date, reps, id])
+    return postgres.one('UPDATE cards SET DIFFICULTY=$1, NEXT_REVIEW=$2, REPS=$3 WHERE ID=$4 RETURNING NEXT_REVIEW', [difficulty, review_date, reps, id])
         .finally(pgp.end());
 };
 
 exports.resetForgottenCard = function(id) {
-    return postgres.none('UPDATE cards SET REPS=0, NEXT_REVIEW = CURRENT_DATE where ID=$1', [id])
+    return postgres.one('UPDATE cards SET REPS=0, NEXT_REVIEW = CURRENT_DATE where ID=$1 RETURNING NEXT_REVIEW', [id])
         .finally(pgp.end());
 };
 

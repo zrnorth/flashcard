@@ -2,19 +2,25 @@ extends layout
 
 block head-extras
     script(src='/js/cards.js')
+    script.
+      CARDS_LEFT =!{cards.length};
+
 
 block content
     h1= title
-    p There are #{cards.length} reviews today.
-    each card in cards
-      .review-container
-        .card-container()
-          .front card ##{card.id}: #{card.front} / #{card.back}
-          .back back
-        form(method='POST' action='' id=card.id).review
-          h4 Score:
-          each val in [0, 1, 2, 3, 4, 5]
-            button.score-button(value=val) #{val}
+    #cards-left-banner.
+      There are #{cards.length} reviews today.
 
-    else
-      h4 All done! ✔
+    .reviews
+      each card in cards
+        .review-container
+          .card-container
+            .front card ##{card.id}: #{card.front} / #{card.back}
+            .back back
+          form(method='POST' action='' id=card.id).review
+            h4 Score:
+            each val in [0, 1, 2, 3, 4, 5]
+              button.score-button(value=val) #{val}
+
+      else
+        h4 No reviews today! ✔

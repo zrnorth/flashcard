@@ -1,6 +1,8 @@
+var CARDS_LEFT = -1;
+
 $(function() {
   $('.card-container').click(function (e) {
-    $(this).parent().toggleClass('flipped');
+    flipCard($(this).parent());
   });
 
   $('.score-button').click(function(e) {
@@ -18,11 +20,36 @@ $(function() {
       type: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(payload),
-      success: function() {
-        console.log('Review logged successfully.');
+      success: function(data) {
+        if (data.repeat) {
+          // Flip it back, and append it to the reviews container.
+          console.log('Have to repeat this card.');
+          flipCard(reviewContainer);
+          $('.reviews').append(reviewContainer);
+        }
+        else {
+          // Done with it, so fade it out.
+          reviewContainer.fadeOut('fast');
+          CARDS_LEFT -= 1;
+        }
+        updateCardsLeftText();
       }
     });
-    // temp: hide the whole card so they slide up.
-    reviewContainer.fadeOut('fast');
   });
 });
+
+function flipCard(reviewContainer) {
+  reviewContainer.toggleClass('flipped');
+}
+
+function updateCardsLeftText() {
+  if (CARDS_LEFT > 1) {
+    $('#cards-left-banner').text(CARDS_LEFT + ' reviews left to go.');
+  }
+  else if (CARDS_LEFT > 0) {
+    $('#cards-left-banner').text(CARDS_LEFT + ' review left to go.');
+  }
+  else {
+    $('#cards-left-banner').text('All done! ✔')
+  }
+}

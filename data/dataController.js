@@ -38,16 +38,21 @@ exports.deleteAll = function() {
 exports.logReview = function(id, responseQuality) {
     return db.getCard(id).then(function(card) {
         // If the review was correct, update the card's correct reps and difficulty in the db.
+        // Return the date the card should next be reviewed.
         if (responseQuality >= 3) {
             var difficulty = SM2.getUpdatedDifficulty(card.difficulty, responseQuality);
             var today = Date.simpleToday();
             var nextReviewDate = today.addDays(SM2.getDaysUntilNextReview(card.reps, difficulty));
 
-            return db.updateCard(id, difficulty, nextReviewDate, card.reps + 1);
+            return db.updateCard(id, difficulty, nextReviewDate, card.reps + 1).then(function(updatedCard) {
+                return updatedCard.next_review;
+            });
         }
         // If it was incorrect, reset the number of reps, leaving the difficulty the same.
         else {
-            return db.resetForgottenCard(id);
+            return db.resetForgottenCard(id).then(function(updatedCard) {
+                return updatedCard.next_review;
+            });
         }
     });
 }

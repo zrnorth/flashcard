@@ -165,7 +165,3 @@ program.parse(process.argv);
 if (program.args.length === 0) {
     program.help();
 }
-// If bad command specified, show the help info
-else if (!program._execs[program.args[0]]) {
-    program.help();
-}
