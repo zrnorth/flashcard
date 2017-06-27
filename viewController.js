@@ -1,4 +1,5 @@
 var dataController = require('./data/dataController');
+var validator = require('validator');
 require('./helpers/dateHelpers.js');
 
 // page names go here
@@ -36,41 +37,59 @@ exports.createCards_GET = function(req, res) {
 
 // submit the card creation request
 exports.createCards_POST = function(req, res) {
-  // Check that fields are not empty
-  req.checkBody('front', 'Card needs a front').notEmpty();
-  req.checkBody('back', 'Card needs a back').notEmpty();
-
-  // Trim and escape the fields
-  req.sanitize('front').escape();
-  req.sanitize('front').trim();
-  req.sanitize('back').escape();
-  req.sanitize('back').trim();
-
-  // Run the validators
-  var errors = req.validationErrors();
-
-  // If there are errors, pass them back to the page here.
-  // Otherwise, send the post and redirect to the card list page.
-  if (errors) {
-    console.log(errors);
+  // helper to fail quickly and not continue through the function.
+  var failWithError = function(error) {
     res.render('createCardsPage', {
       title: createCardsPageName,
-      errors: errors
+      error: error
     });
   }
-  else {
-    const front = req.body.front;
-    const back = req.body.back;
-    dataController.newCard(front, back).then(function(id) {
-      // todo should redirect to the created card in the card list page.
-      res.render('createCardsPage', {
-        title: createCardsPageName, 
-        newCard: {
-          front: front,
-          back: back,
-          id: id
-        }
-      });
+
+  // Validate the input before passing it in
+  var fronts = req.body.front;
+  var backs = req.body.back;
+  if (!fronts || !backs) {
+    failWithError('Input a card before hitting submit.');
+    return;
+  }
+  // If there is only 1 card being input, it doesn't make it an array.
+  if (!(fronts instanceof Array)) {
+    fronts = [ fronts ];
+  }
+  if (!(backs instanceof Array)) {
+    backs = [ backs ];
+  }
+
+  var cards = [];
+  for (var i = 0; i < fronts.length; i++) {
+    var front = fronts[i];
+    var back = backs[i];
+
+    //Check that fields are not empty
+    if (validator.isEmpty(front) || validator.isEmpty(back)) {
+      failWithError('You missed a field on one of the cards.');
+      return;
+    }
+
+    // trim and escape the fields
+    front = validator.escape(front);
+    front = validator.trim(front);
+    back = validator.escape(back);
+    back = validator.trim(back);
+
+    // Now that we are validated, save our card object.
+    cards.push({
+      front: front,
+      back: back
     });
   }
+
+  dataController.newCards(cards).then(function(ids) {
+    console.log(ids);
+    // todo should redirect to the created card in the card list page.
+    res.render('createCardsPage', {
+      title: createCardsPageName, 
+      numNewCards: ids.length
+    });
+  });
 }

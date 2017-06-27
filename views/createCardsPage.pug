@@ -5,7 +5,6 @@ block head-extras
 
 block content
   h1= title
-  h4 New Card
   form.form-inline(method='POST' action='' autocomplete='off')
     .row
       .form-group
@@ -18,20 +17,7 @@ block content
     button.btn.btn-primary(type='submit') Submit
 
   .results
-    if errors
-      for error in errors
-        .alert.alert-danger(role="alert")= error.msg
-    else if newCard
-      .panel.panel-default
-        .panel-heading Created new card!
-        table.table
-          thead
-            tr
-              th #
-              th Front
-              th Back
-          tbody
-            tr
-              th(scope="row") #{newCard.id}
-              td #{newCard.front}
-              td #{newCard.back}
+    if error
+      .alert.alert-danger(role="alert")= error
+    else if numNewCards
+      .alert.alert-success Created #{numNewCards} new cards!
