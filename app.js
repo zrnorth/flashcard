@@ -9,6 +9,9 @@ var index = require('./routes/index');
 
 var app = express();
 
+// Setup the js libs available in the pug templates
+app.locals.moment = require('moment');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');

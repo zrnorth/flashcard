@@ -60,3 +60,7 @@ exports.logReview = function(id, responseQuality) {
 exports.getTodaysCards = function() {
     return db.getTodaysCards();
 }
+
+exports.getAllCards = function() {
+    return db.getAllCards();
+}

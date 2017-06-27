@@ -2,3 +2,24 @@ extends layout
 
 block content
   h1= title
+  .cards-list
+    .panel.panel-default
+      .panel-heading Cards
+      table.table
+        thead
+          tr
+            th #
+            th Front
+            th Back
+            th Next Review Date
+            th Difficulty (lower is better)
+            th Reps
+        tbody
+          each card in cards
+            tr
+              th(scope="row")= card.id
+              td= card.front
+              td= card.back
+              td= moment(card.next_review).format('MMMM Do, YYYY')
+              td= card.difficulty
+              td= card.reps

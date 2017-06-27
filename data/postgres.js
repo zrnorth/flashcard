@@ -13,8 +13,8 @@ const pgp = require('pg-promise')(options);
 const connection = require('./connectionInfo.json');
 const postgres = pgp(connection);
 
-exports.selectAllRowsDebug = function() {
-    return postgres.any('SELECT * FROM cards')
+exports.getAllCards = function() {
+    return postgres.any('SELECT * FROM cards ORDER BY ID')
         .finally(pgp.end());
 }
 

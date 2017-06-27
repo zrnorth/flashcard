@@ -97,7 +97,10 @@ exports.createCards_POST = function(req, res) {
 
 // List all the cards
 exports.listCards = function(req, res) {
-  res.render('listCardsPage', {
-    title: listCardsPageName
+  dataController.getAllCards().then(function(cards) {
+    res.render('listCardsPage', {
+      title: listCardsPageName,
+      cards: cards
+    });
   });
 }
