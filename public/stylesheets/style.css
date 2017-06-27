@@ -22,6 +22,7 @@ body {
   width: 100%;
   min-height: 100%;
   border-radius: 10px;
+  font-size: 20px;
 
   /* animations */
   backface-visibility: hidden;
@@ -70,10 +71,11 @@ button {
   border-radius: 10px;
   font-size: 12px;
   text-align: left;
-  height: 175px;
+  height: 162px;
   width: 416px;
   margin: 25px auto;
   display: none;
+  padding-top: 10px;
 }
 
 #reminder-text p {

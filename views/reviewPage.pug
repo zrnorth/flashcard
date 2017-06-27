@@ -15,8 +15,8 @@ block content
     each card in cards
       .review-container
         .card-container
-          .front card ##{card.id}: #{card.front} / #{card.back}
-          .back back
+          .front= card.front
+          .back= card.back
         form(method='POST' action='' id=card.id).review
           h4 Score:
           each val in [0, 1, 2, 3, 4, 5]
