@@ -25,4 +25,7 @@ router.post('/createCards', viewController.createCards_POST);
 /* GET the list all cards page */
 router.get('/listCards', viewController.listCards);
 
+/* DELETE a card by id */
+router.delete('/deleteCard', viewController.deleteCard);
+
 module.exports = router;

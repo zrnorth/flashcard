@@ -104,3 +104,12 @@ exports.listCards = function(req, res) {
     });
   });
 }
+
+// Delete a card by id
+exports.deleteCard = function(req, res) {
+  dataController.deleteCard(req.body.id).then(function() {
+    res.sendStatus(200);
+  }, function() {
+    res.sendStatus(500);
+  });
+}

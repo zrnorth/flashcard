@@ -1,5 +1,8 @@
 extends layout
 
+block head-extras
+  script(src='/js/list.js')
+
 block content
   h1= title
   .cards-list
@@ -14,6 +17,7 @@ block content
             th Next Review Date
             th Difficulty (lower is better)
             th Reps
+            th Delete?
         tbody
           each card in cards
             tr
@@ -23,3 +27,6 @@ block content
               td= moment(card.next_review).format('MMMM Do, YYYY')
               td= card.difficulty
               td= card.reps
+              td
+                button.btn.btn-danger.btn-delete
+                  span.glyphicon.glyphicon-minus
