@@ -3,23 +3,10 @@ var router = express.Router();
 
 var viewController = require('../viewController.js');
 
-// List of pages + their names to link to on the front page.
-const PAGES = [
-  {
-    name: 'Review',
-    url: '/todaysCards'
-  },
-  {
-    name: 'Create Cards',
-    url: '/createCards'
-  },
-];
-
 /* GET default home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { 
-    title: 'Flashcards',
-    pages: PAGES
+    title: 'Flashcards'
   });
 });
 
@@ -34,5 +21,12 @@ router.get('/createCards', viewController.createCards_GET);
 
 /* POST a new card */
 router.post('/createCards', viewController.createCards_POST);
+
+/* TEST GET the bootstrap testing page */
+router.get('/test', function(req, res, next) {
+  res.render('testPage', { 
+    title: 'Test Page'
+  });
+});
 
 module.exports = router;

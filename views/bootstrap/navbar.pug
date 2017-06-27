@@ -1,0 +1,34 @@
+// List of pages to show in the navbar.
+// Doesn't include the title (/index)
+// Names should match the page titles to correctly highlight.
+-
+  const PAGES = [
+    {
+      "name": "Review",
+      "url": "/todaysCards"
+    },
+    {
+      "name": "Create Cards",
+      "url": "/createCards"
+    },
+    {
+      "name": "Test Page",
+      "url": "/test"
+    }
+  ];
+
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      // Button to collapse the nav on small screens
+      button.navbar-toggle(data-toggle="collapse", data-target="#navbar")
+        span.icon-bar
+        span.icon-bar
+        span.icon-bar
+      a.navbar-brand(href='/') Flashcards
+    .collapse.navbar-collapse#navbar
+      ul.nav.navbar-nav
+        each page in PAGES
+          - var isActive = (page.name === title ? 'active' : ''); 
+          li(class=isActive)
+            a(href=page.url) #{page.name}

@@ -1,12 +1,15 @@
 var dataController = require('./data/dataController');
 require('./helpers/dateHelpers.js');
 
+// page names go here
+const reviewPageName = 'Review';
+const createCardsPageName = 'Create Cards';
 
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
   dataController.getTodaysCards().then(function(cards) {
     res.render('reviewPage', { 
-      title: 'Reviews',
+      title: reviewPageName,
       cards: cards
     });
   })
@@ -27,7 +30,7 @@ exports.logReview = function(req, res) {
 // Get the form for creating a card
 exports.createCards_GET = function(req, res) {
   res.render('createCardsPage', {
-    title: 'Create New Cards'
+    title: createCardsPageName
   });
 }
 
@@ -55,14 +58,14 @@ exports.createCards_POST = function(req, res) {
   if (errors.length > 0) {
     console.log(errors);
     res.render('createCardsPage', {
-      title: 'Create New Cards',
+      title: createCardsPageName,
       errors: errors
     });
   }
   else {
     dataController.newCard(front, back).then(function(id) {
       res.render('createCardsPage', {
-        title: 'Create New Cards', 
+        title: createCardsPageName, 
         newCard: {
           front: front,
           back: back,
