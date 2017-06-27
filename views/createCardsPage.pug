@@ -13,13 +13,21 @@ block content
       input.form-control(type='text', placeholder='Back of card', name='back', value='')
     button.btn.btn-primary(type='submit') Submit
 
-  if errors
-    h4 Errors:
-    ul
+  .results
+    if errors
       for error in errors
-        li= error.msg
-  else if newCard
-    h4 Created new card!
-    p ID: #{newCard.id}
-    p Front: #{newCard.front}
-    p Back: #{newCard.back}
+        .alert.alert-danger(role="alert")= error.msg
+    else if newCard
+      .panel.panel-default
+        .panel-heading Created new card!
+        table.table
+          thead
+            tr
+              th #
+              th Front
+              th Back
+          tbody
+            tr
+              th(scope="row") #{newCard.id}
+              td #{newCard.front}
+              td #{newCard.back}

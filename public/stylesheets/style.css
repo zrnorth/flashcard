@@ -3,6 +3,7 @@ body {
   text-align: center;
 }
 
+/* Reviews page */
 .review-container {
   display: none;
 }
@@ -77,4 +78,17 @@ button {
 
 #reminder-text p {
   margin-left: 10px
+}
+
+/* Create cards page */
+
+.results {
+  margin-top: 15px;
+}
+.alert {
+  margin-bottom: 15px;
+}
+
+td {
+  text-align: left;
 }
