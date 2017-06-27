@@ -23,3 +23,52 @@ exports.logReview = function(req, res) {
     res.sendStatus(500);
   });
 }
+
+// Get the form for creating a card
+exports.createCards_GET = function(req, res) {
+  res.render('createCardsPage', {
+    title: 'Create New Cards'
+  });
+}
+
+// submit the card creation request
+exports.createCards_POST = function(req, res) {
+  var front = req.body.front;
+  var back = req.body.back;
+  var errors = [];
+  if (!front || front.length === 0) {
+    errors.push('Card needs a front');
+  }
+  else if (front.length > 100) {
+    errors.push('Card front is too long');
+  }
+  if (!back || back.length === 0) {
+    errors.push('Card needs a back');
+  }
+  else if (back.length > 100) {
+    errors.push('Card back is too long');
+  }
+  // todo: escape SQL injection stuff here
+
+  // If there are errors, pass them back to the page here.
+  // Otherwise, send the post and redirect to the card list page.
+  if (errors.length > 0) {
+    console.log(errors);
+    res.render('createCardsPage', {
+      title: 'Create New Cards',
+      errors: errors
+    });
+  }
+  else {
+    dataController.newCard(front, back).then(function(id) {
+      res.render('createCardsPage', {
+        title: 'Create New Cards', 
+        newCard: {
+          front: front,
+          back: back,
+          id: id
+        }
+      });
+    });
+  }
+}

@@ -14,4 +14,10 @@ router.get('/todaysCards', viewController.todaysCards);
 /* POST a review for a given card */
 router.post('/logReview', viewController.logReview);
 
+/* GET the create card page */
+router.get('/createCards', viewController.createCards_GET);
+
+/* POST a new card */
+router.post('/createCards', viewController.createCards_POST);
+
 module.exports = router;
