@@ -15,22 +15,30 @@ $(function() {
       responseQuality: $(this).attr('value')
     }
     console.log('Logging score of ' + payload.responseQuality + ' for card #' + payload.id);
+
     $.ajax({
       url: '/logReview',
       type: 'POST',
       contentType: 'application/json',
       data: JSON.stringify(payload),
       success: function(data) {
-        if (data.repeat) {
-          // Flip it back, and append it to the reviews container.
-          flipCard(reviewContainer);
-          $('.reviews').append(reviewContainer);
+        var afterFadingOut; // Once we fade out, behavior differs based on whether we got the card right or not.
+        if (data.repeat) { // we got the card wrong, so move it to the end of the reviews list
+          afterFadingOut = function() {
+            flipCard($(this));
+            $(this).appendTo('.reviews');
+            revealTopReviewContainer();
+          }
         }
         else {
-          // Done with it, so fade it out.
-          reviewContainer.fadeOut('fast');
+          // Done with it! remove the card from the page
           CARDS_LEFT -= 1;
+          afterFadingOut = function() {
+            $(this).remove();
+            revealTopReviewContainer();
+          }
         }
+        reviewContainer.fadeOut(80, afterFadingOut);
         updateCardsLeftText();
       }
     });
@@ -45,7 +53,12 @@ $(function() {
     handleReminderClick();
   })
 
+  revealTopReviewContainer();
 });
+
+function revealTopReviewContainer() {
+  $('.review-container').first().fadeToggle('fast');
+}
 
 function handleReminderClick() {
   $('#reminder-text').fadeToggle('fast');

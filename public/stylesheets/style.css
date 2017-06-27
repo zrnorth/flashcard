@@ -3,6 +3,10 @@ body {
   text-align: center;
 }
 
+.review-container {
+  display: none;
+}
+
 .card-container {
   margin: 50px auto;
   height: 300px;

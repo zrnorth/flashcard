@@ -19,7 +19,7 @@ exports.selectAllRowsDebug = function() {
 }
 
 exports.getTodaysCards = function() {
-    return postgres.any('SELECT * FROM cards WHERE NEXT_REVIEW <= CURRENT_DATE')
+    return postgres.any('SELECT * FROM cards WHERE NEXT_REVIEW <= CURRENT_DATE ORDER BY RANDOM()')
         .finally(pgp.end());
 };
 
