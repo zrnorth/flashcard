@@ -6,11 +6,15 @@ block head-extras
 block content
   h1= title
   h4 New Card
-  form(method='POST' action='')
-    .form-group
-      input.form-control(type='text', placeholder='Front of card', name='front', value='')
-    .form-group
-      input.form-control(type='text', placeholder='Back of card', name='back', value='')
+  form.form-inline(method='POST' action='' autocomplete='off')
+    .row
+      .form-group
+        input.form-control(type='text', placeholder='Front of card', name='front', value='')
+      .form-group
+        input.form-control(type='text', placeholder='Back of card', name='back', value='')
+      button.btn.btn-success.btn-add
+        span.glyphicon.glyphicon-plus
+
     button.btn.btn-primary(type='submit') Submit
 
   .results
