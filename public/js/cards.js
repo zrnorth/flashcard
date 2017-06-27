@@ -23,7 +23,6 @@ $(function() {
       success: function(data) {
         if (data.repeat) {
           // Flip it back, and append it to the reviews container.
-          console.log('Have to repeat this card.');
           flipCard(reviewContainer);
           $('.reviews').append(reviewContainer);
         }
@@ -36,7 +35,21 @@ $(function() {
       }
     });
   });
+
+  $('.reminder-button').click(function(e) {
+    e.preventDefault();
+    handleReminderClick();
+  });
+
+  $('#reminder-text').click(function(e) {
+    handleReminderClick();
+  })
+
 });
+
+function handleReminderClick() {
+  $('#reminder-text').fadeToggle('fast');
+}
 
 function flipCard(reviewContainer) {
   reviewContainer.toggleClass('flipped');
@@ -44,10 +57,10 @@ function flipCard(reviewContainer) {
 
 function updateCardsLeftText() {
   if (CARDS_LEFT > 1) {
-    $('#cards-left-banner').text(CARDS_LEFT + ' reviews left to go.');
+    $('#cards-left-banner').text(CARDS_LEFT + ' reviews to go.');
   }
   else if (CARDS_LEFT > 0) {
-    $('#cards-left-banner').text(CARDS_LEFT + ' review left to go.');
+    $('#cards-left-banner').text(CARDS_LEFT + ' review to go.');
   }
   else {
     $('#cards-left-banner').text('All done! ✔')

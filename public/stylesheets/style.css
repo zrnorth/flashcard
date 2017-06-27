@@ -54,7 +54,23 @@ body {
   visibility: visible;
 }
 
-.score-button {
+button {
   margin-left: 3px;
   margin-right: 3px;
+}
+
+#reminder-text {
+  box-sizing: border-box;
+  border: 2px solid grey;
+  border-radius: 10px;
+  font-size: 12px;
+  text-align: left;
+  height: 175px;
+  width: 416px;
+  margin: 25px auto;
+  display: none;
+}
+
+#reminder-text p {
+  margin-left: 10px
 }
