@@ -7,17 +7,17 @@ block content
   h1= title
   h4 New Card
   form(method='POST' action='')
-    input.form-control(type='text', placeholder='Front of card', name='front', value='')
-    br
-    input.form-control(type='text', placeholder='Back of card', name='back', value='')
-    br
-    button(type='submit') Submit
+    .form-group
+      input.form-control(type='text', placeholder='Front of card', name='front', value='')
+    .form-group
+      input.form-control(type='text', placeholder='Back of card', name='back', value='')
+    button.btn.btn-primary(type='submit') Submit
 
   if errors
     h4 Errors:
     ul
       for error in errors
-        li= error
+        li= error.msg
   else if newCard
     h4 Created new card!
     p ID: #{newCard.id}

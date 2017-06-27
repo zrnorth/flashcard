@@ -36,26 +36,22 @@ exports.createCards_GET = function(req, res) {
 
 // submit the card creation request
 exports.createCards_POST = function(req, res) {
-  var front = req.body.front;
-  var back = req.body.back;
-  var errors = [];
-  if (!front || front.length === 0) {
-    errors.push('Card needs a front');
-  }
-  else if (front.length > 100) {
-    errors.push('Card front is too long');
-  }
-  if (!back || back.length === 0) {
-    errors.push('Card needs a back');
-  }
-  else if (back.length > 100) {
-    errors.push('Card back is too long');
-  }
-  // todo: escape SQL injection stuff here
+  // Check that fields are not empty
+  req.checkBody('front', 'Card needs a front').notEmpty();
+  req.checkBody('back', 'Card needs a back').notEmpty();
+
+  // Trim and escape the fields
+  req.sanitize('front').escape();
+  req.sanitize('front').trim();
+  req.sanitize('back').escape();
+  req.sanitize('back').trim();
+
+  // Run the validators
+  var errors = req.validationErrors();
 
   // If there are errors, pass them back to the page here.
   // Otherwise, send the post and redirect to the card list page.
-  if (errors.length > 0) {
+  if (errors) {
     console.log(errors);
     res.render('createCardsPage', {
       title: createCardsPageName,
@@ -63,7 +59,10 @@ exports.createCards_POST = function(req, res) {
     });
   }
   else {
+    const front = req.body.front;
+    const back = req.body.back;
     dataController.newCard(front, back).then(function(id) {
+      // todo should redirect to the created card in the card list page.
       res.render('createCardsPage', {
         title: createCardsPageName, 
         newCard: {
