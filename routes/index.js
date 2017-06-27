@@ -3,9 +3,24 @@ var router = express.Router();
 
 var viewController = require('../viewController.js');
 
+// List of pages + their names to link to on the front page.
+const PAGES = [
+  {
+    name: 'Review',
+    url: '/todaysCards'
+  },
+  {
+    name: 'Create Cards',
+    url: '/createCards'
+  },
+];
+
 /* GET default home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { 
+    title: 'Flashcards',
+    pages: PAGES
+  });
 });
 
 /* GET the cards for today. */
