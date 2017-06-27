@@ -22,11 +22,7 @@ router.get('/createCards', viewController.createCards_GET);
 /* POST a new card */
 router.post('/createCards', viewController.createCards_POST);
 
-/* TEST GET the bootstrap testing page */
-router.get('/test', function(req, res, next) {
-  res.render('testPage', { 
-    title: 'Test Page'
-  });
-});
+/* GET the list all cards page */
+router.get('/listCards', viewController.listCards);
 
 module.exports = router;

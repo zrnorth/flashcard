@@ -5,6 +5,7 @@ require('./helpers/dateHelpers.js');
 // page names go here
 const reviewPageName = 'Review';
 const createCardsPageName = 'Create Cards';
+const listCardsPageName = 'List Cards';
 
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
@@ -91,5 +92,12 @@ exports.createCards_POST = function(req, res) {
       title: createCardsPageName, 
       numNewCards: ids.length
     });
+  });
+}
+
+// List all the cards
+exports.listCards = function(req, res) {
+  res.render('listCardsPage', {
+    title: listCardsPageName
   });
 }
