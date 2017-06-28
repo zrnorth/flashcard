@@ -7,7 +7,7 @@ block content
   h1= title
   .cards-list
     .panel.panel-default
-      .panel-heading Cards
+      .panel-heading Displaying cards #{offset+1}-#{offset+cards.length} (#{totalCards} total)
       table.table
         thead
           tr
@@ -30,3 +30,35 @@ block content
               td
                 button.btn.btn-danger.btn-delete
                   span.glyphicon.glyphicon-minus
+  if pages > 1
+    // Handle the enabling / disabled the prev & next buttons
+    -
+      const base = '/listCards/';
+      var previousLink = base + (currentPage-1);
+      var previousLinkDisabled = '';
+      var nextLink = base + (currentPage+1);
+      var nextLinkDisabled = '';
+      switch(currentPage) {
+        case 0:
+          previousLink = '#';
+          previousLinkDisabled = 'disabled';
+          break;
+        case pages-1:
+          nextLink = '#';
+          nextLinkDisabled = 'disabled';
+          break;
+      }
+
+    nav
+      ul.pagination
+        li.page-item(class=previousLinkDisabled)
+          a.page-link(href=previousLink) Previous
+
+        - for (var i = 0; i < pages; i++) {
+          - var active = (i===currentPage ? 'active' : '');
+          li.page-item(class=active)
+            a.page-link(href='/listCards/'+i) #{i}
+        - }
+
+        li.page-item(class=nextLinkDisabled)
+          a.page-link(href=nextLink) Next

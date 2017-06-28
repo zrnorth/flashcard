@@ -64,3 +64,9 @@ exports.getTodaysCards = function() {
 exports.getAllCards = function(limit, offset) {
     return db.getAllCards(limit, offset);
 }
+
+exports.getTotalNumberOfCards = function() {
+    return db.getTotalNumberOfCards().then(function(data) {
+        return data.count;
+    });
+}

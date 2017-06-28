@@ -23,6 +23,11 @@ exports.getAllCards = function(limit, offset) {
         .finally(pgp.end());
 }
 
+exports.getTotalNumberOfCards = function() {
+    return postgres.one('SELECT count(*) AS count FROM cards')
+        .finally(pgp.end());
+}
+
 exports.getTodaysCards = function() {
     return postgres.any('SELECT * FROM cards WHERE NEXT_REVIEW <= CURRENT_DATE ORDER BY RANDOM()')
         .finally(pgp.end());

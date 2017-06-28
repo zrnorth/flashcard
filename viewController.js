@@ -7,6 +7,9 @@ const reviewPageName = 'Review';
 const createCardsPageName = 'Create Cards';
 const listCardsPageName = 'List Cards';
 
+// constant vals go here
+const maxCardsPerPage = 30;
+
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
   dataController.getTodaysCards().then(function(cards) {
@@ -97,12 +100,24 @@ exports.createCards_POST = function(req, res) {
 
 // List all the cards
 exports.listCards = function(req, res) {
-  dataController.getAllCards().then(function(cards) {
-    res.render('listCardsPage', {
-      title: listCardsPageName,
-      cards: cards
+  var offset = req.params.page * maxCardsPerPage;
+  dataController.getAllCards(maxCardsPerPage, offset).then(function(cards) {
+    dataController.getTotalNumberOfCards().then(function(totalCards) {
+      if (offset > totalCards) {
+        res.sendStatus('404');
+        return;
+      }
+      var totalPagesNeeded = Math.ceil(totalCards / maxCardsPerPage);
+      res.render('listCardsPage', {
+        title: listCardsPageName,
+        cards: cards,
+        totalCards: totalCards,
+        offset: offset,
+        pages: totalPagesNeeded,
+        currentPage: parseInt(req.params.page)
+      });
     });
-  });
+  });  
 }
 
 // Delete a card by id
