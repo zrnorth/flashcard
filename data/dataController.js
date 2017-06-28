@@ -61,6 +61,6 @@ exports.getTodaysCards = function() {
     return db.getTodaysCards();
 }
 
-exports.getAllCards = function() {
-    return db.getAllCards();
+exports.getAllCards = function(limit, offset) {
+    return db.getAllCards(limit, offset);
 }

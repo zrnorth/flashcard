@@ -13,8 +13,13 @@ const pgp = require('pg-promise')(options);
 const connection = require('./connectionInfo.json');
 const postgres = pgp(connection);
 
-exports.getAllCards = function() {
-    return postgres.any('SELECT * FROM cards ORDER BY ID')
+// limit and offset are used for pagination, but not required.
+exports.getAllCards = function(limit, offset) {
+    var sql = 'SELECT * FROM cards ORDER BY ID';
+    if (limit !== undefined && offset !== undefined) {
+        sql += ' LIMIT ' + limit + ' OFFSET ' + offset;
+    }
+    return postgres.any(sql)
         .finally(pgp.end());
 }
 
