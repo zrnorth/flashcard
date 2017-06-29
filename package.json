@@ -6,9 +6,11 @@
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
-    "test": "node ./test/test_all",
-    "populate": "node ./test/populate",
-    "clear": "node ./test/clear"
+    "test": "NODE_ENV=DEV node ./test/test_all",
+    "populate": "NODE_ENV=DEV node ./test/populate",
+    "clear": "NODE_ENV=DEV node ./test/clear",
+    "populate-prod": "NODE_ENV=PROD node ./test/populate",
+    "clear-prod": "NODE_ENV=PROD node ./test/clear"
   },
   "repository": {
     "type": "git",

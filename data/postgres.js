@@ -6,16 +6,39 @@ const promise = require('bluebird');
 const pgp = require('pg-promise')({
     promiseLib: promise
 });
-pgp.pg.defaults.ssl = true;
+
+var databaseUrl;
+switch (process.env.NODE_ENV) {
+    case 'DEV':
+    case 'DEVELOPMENT': {
+        pgp.pg.defaults.ssl = false;
+        // Change this to your local postgres information.
+        databaseUrl = 'postgres://znorth:@localhost:5432/test';
+        break;
+    }
+
+    case 'PROD':
+    case 'PRODUCTION': {
+        pgp.pg.defaults.ssl = true;
+        databaseUrl = process.env.DATABASE_URL;
+        if (!databaseUrl) {
+            console.error('You are trying to run against the production db, but haven\'t set up the db url through heroku yet.');
+            console.error('You can run this:');
+            console.error('export DATABASE_URL=$(heroku config:get DATABASE_URL -a zrnorth-flashcards)');
+            console.error('to set it.');
+        }
+        break;
+    }
+    default: {
+        console.error('You need to set NODE_ENV before starting this. Run');
+        console.error('export NODE_ENV=DEV | PROD');
+        console.error('to choose which db to run against.')
+        return;
+    }
+}
 
 // Setup the connection to postgres
-if (!process.env.DATABASE_URL) {
-    console.error('No value $DATABASE_URL is set. You can run this:');
-    console.error('export DATABASE_URL=$(heroku config:get DATABASE_URL -a zrnorth-flashcards)');
-    console.error('to set it.');
-    return;
-}
-const postgres = pgp(process.env.DATABASE_URL);
+const postgres = pgp(databaseUrl);
 
 // limit and offset are used for pagination, but not required.
 // row number is the sequential order of the cards (no gaps)
