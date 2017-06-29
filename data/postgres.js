@@ -3,15 +3,19 @@ require('../helpers/dateHelpers.js');
 
 // Set bluebird as the default promise library for pgp.
 const promise = require('bluebird');
-
-const options = {
+const pgp = require('pg-promise')({
     promiseLib: promise
-};
-const pgp = require('pg-promise')(options);
+});
+pgp.pg.defaults.ssl = true;
 
 // Setup the connection to postgres
-const connection = require('./connectionInfo.json');
-const postgres = pgp(connection);
+if (!process.env.DATABASE_URL) {
+    console.error('No value $DATABASE_URL is set. You can run this:');
+    console.error('export DATABASE_URL=$(heroku config:get DATABASE_URL -a zrnorth-flashcards)');
+    console.error('to set it.');
+    return;
+}
+const postgres = pgp(process.env.DATABASE_URL);
 
 // limit and offset are used for pagination, but not required.
 // row number is the sequential order of the cards (no gaps)
