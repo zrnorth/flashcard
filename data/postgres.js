@@ -14,8 +14,9 @@ const connection = require('./connectionInfo.json');
 const postgres = pgp(connection);
 
 // limit and offset are used for pagination, but not required.
+// row number is the sequential order of the cards (no gaps)
 exports.getAllCards = function(limit, offset) {
-    var sql = 'SELECT * FROM cards ORDER BY ID';
+    var sql = 'SELECT ROW_NUMBER() OVER (ORDER BY ID), * FROM cards ORDER BY ID';
     if (limit !== undefined && offset !== undefined) {
         sql += ' LIMIT ' + limit + ' OFFSET ' + offset;
     }

@@ -7,7 +7,7 @@ block content
   h1= title
   .cards-list
     .panel.panel-default
-      .panel-heading Displaying cards #{offset+1}-#{offset+cards.length} (#{totalCards} total)
+      .panel-heading #[span.cards-count-helper-text Displaying cards #{offset+1}-#{offset+cards.length}] (#[span.cards-count #{totalCards}] total)
       table.table
         thead
           tr
@@ -20,8 +20,8 @@ block content
             th Delete?
         tbody
           each card in cards
-            tr
-              th(scope="row")= card.id
+            tr(id="card-id-" + card.id)
+              th(scope="row")= card.row_number
               td= card.front
               td= card.back
               td= moment(card.next_review).format('MMMM Do, YYYY')
