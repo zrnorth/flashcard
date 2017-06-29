@@ -40,6 +40,8 @@ switch (process.env.NODE_ENV) {
 // Setup the connection to postgres
 const postgres = pgp(databaseUrl);
 
+// ----- CARD operations
+
 // limit and offset are used for pagination, but not required.
 // row number is the sequential order of the cards (no gaps)
 exports.getAllCards = function(limit, offset) {
@@ -117,11 +119,23 @@ create table cards(
     DIFFICULTY      REAL                        NOT NULL,
     REPS            INT                         NOT NULL,
     OWNER_ID        INT REFERENCES users(ID)    NOT NULL
-);
+); */
 
+// --- USER operations
+exports.createUser = function(username, hashedPassword) {
+    return postgres.one('INSERT INTO users (USERNAME, PASSWORD) values ($1, $2) RETURNING ID', [username, hashedPassword])
+        .finally(pgp.end());
+}
+
+exports.getUserByUsername = function(username) {
+    return postgres.one('SELECT * FROM users WHERE USERNAME=$1', [username])
+        .finally(pgp.end());
+}
+
+/*
 create table users(
     ID              SERIAL PRIMARY KEY          NOT NULL,
-    USERNAME        VARCHAR(200)                NOT NULL,
+    USERNAME        VARCHAR(200)                NOT NULL UNIQUE,
     PASSWORD        VARCHAR(100)                NOT NULL
 );
 */

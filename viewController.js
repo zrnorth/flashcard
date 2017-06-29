@@ -1,4 +1,5 @@
 var dataController = require('./data/dataController');
+var loginController = require('./data/loginController');
 var validator = require('validator');
 require('./helpers/dateHelpers.js');
 
@@ -132,8 +133,35 @@ exports.deleteCard = function(req, res) {
 }
 
 exports.login_GET = function(req, res) {
+
   res.render('loginPage', {
     title: loginPageName
+  });
+}
+
+exports.login_POST = function(req, res) {
+  // Helper to fail the form POST 
+  var failWithError = function(error) {
+    res.render('loginPage', {
+      title: loginPageName,
+      error: error
+    });
+  }
+
+  var username = req.body.username;
+  var password = req.body.password;
+
+  if (!username || !password) {
+    failWithError('Not all form elements were filled.');
+    return;
+  }
+  loginController.login(username, password).then(function(id) {
+    // temp
+    failWithError('login was successful!: ' + id);
+    return;
+  }).catch(function(error) {
+    failWithError(error);
+    return;
   });
 }
 
@@ -166,7 +194,14 @@ exports.register_POST = function(req, res) {
     return;
   }
 
-  // temp
-  failWithError('Works');
-  return;
+  // Create a new user with the given information
+  loginController.createUser(username, password1).then(function(id) {
+    if (!id) {
+      failWithError('Username is already taken');
+      return;
+    }
+    res.render('loginPage', {
+      title: loginPageName
+    });
+  });
 }

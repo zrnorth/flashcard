@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var viewController = require('../viewController.js');
-var loginController = require('../loginController.js');
 
 /* GET default home page. */
 router.get('/', function(req, res, next) {
@@ -36,6 +35,9 @@ router.delete('/deleteCard', viewController.deleteCard);
 
 /* GET the login page */
 router.get('/login', viewController.login_GET);
+
+/* POST a login attempt */
+router.post('/login', viewController.login_POST);
 
 /* GET the register page */
 router.get('/register', viewController.register_GET);
