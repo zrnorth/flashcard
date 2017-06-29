@@ -6,6 +6,8 @@ require('./helpers/dateHelpers.js');
 const reviewPageName = 'Review';
 const createCardsPageName = 'Create Cards';
 const listCardsPageName = 'List Cards';
+const registerPageName = 'Register';
+const loginPageName = 'Login';
 
 // constant vals go here
 const maxCardsPerPage = 30;
@@ -127,4 +129,44 @@ exports.deleteCard = function(req, res) {
   }, function() {
     res.sendStatus(500);
   });
+}
+
+exports.login_GET = function(req, res) {
+  res.render('loginPage', {
+    title: loginPageName
+  });
+}
+
+exports.register_GET = function(req, res) {
+  res.render('registerPage', {
+    title: registerPageName
+  });
+}
+
+exports.register_POST = function(req, res) {
+  // Helper to fail the form POST 
+  var failWithError = function(error) {
+    res.render('registerPage', {
+      title: registerPageName,
+      error: error
+    });
+  }
+
+  var username = req.body.username;
+  var password1 = req.body.password;
+  var password2 = req.body.password2;
+
+  if (!username || !password1 || !password2) {
+    failWithError('Not all form elements were filled.');
+    return;
+  }
+
+  if (password1 !== password2) {
+    failWithError('Passwords didn\'t match.');
+    return;
+  }
+
+  // temp
+  failWithError('Works');
+  return;
 }

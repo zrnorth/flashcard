@@ -110,11 +110,18 @@ exports.deleteAll = function() {
 }
 /*
 create table cards(
-    ID              SERIAL PRIMARY KEY      NOT NULL,
-    FRONT           TEXT                    NOT NULL,
-    BACK            TEXT                    NOT NULL,
-    NEXT_REVIEW     DATE                    NOT NULL,
-    DIFFICULTY      REAL                    NOT NULL,
-    REPS            INT                     NOT NULL
+    ID              SERIAL PRIMARY KEY          NOT NULL,
+    FRONT           TEXT                        NOT NULL,
+    BACK            TEXT                        NOT NULL,
+    NEXT_REVIEW     DATE                        NOT NULL,
+    DIFFICULTY      REAL                        NOT NULL,
+    REPS            INT                         NOT NULL,
+    OWNER_ID        INT REFERENCES users(ID)    NOT NULL
+);
+
+create table users(
+    ID              SERIAL PRIMARY KEY          NOT NULL,
+    USERNAME        VARCHAR(200)                NOT NULL,
+    PASSWORD        VARCHAR(100)                NOT NULL
 );
 */

@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var viewController = require('../viewController.js');
+var loginController = require('../loginController.js');
 
 /* GET default home page. */
 router.get('/', function(req, res, next) {
@@ -32,5 +33,14 @@ router.get('/listCards/:page', viewController.listCards);
 
 /* DELETE a card by id */
 router.delete('/deleteCard', viewController.deleteCard);
+
+/* GET the login page */
+router.get('/login', viewController.login_GET);
+
+/* GET the register page */
+router.get('/register', viewController.register_GET);
+
+/* POST a user registration */
+router.post('/register', viewController.register_POST);
 
 module.exports = router;
