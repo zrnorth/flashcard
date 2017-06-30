@@ -2,7 +2,7 @@
 // Doesn't include the title (/index)
 // Names should match the page titles to correctly highlight.
 -
-  const PAGES = [
+  const LOGGED_IN_PAGES = [
     {
       "name": "Review",
       "url": "/todaysCards"
@@ -14,6 +14,21 @@
     {
       "name": "List Cards",
       "url": "/listCards"
+    },
+    {
+      "name": "Logout",
+      "url": "/logout"
+    }
+  ];
+
+  const LOGGED_OUT_PAGES = [
+    {
+      "name": "Login",
+      "url": "/login"
+    },
+    {
+      "name": "Register",
+      "url": "/register"
     }
   ];
 
@@ -28,7 +43,7 @@ nav.navbar.navbar-default
       a.navbar-brand(href='/todaysCards') Flashcards
     .collapse.navbar-collapse#navbar
       ul.nav.navbar-nav
+        - var PAGES = (session.user ? LOGGED_IN_PAGES : LOGGED_OUT_PAGES);
         each page in PAGES
-          - var isActive = (page.name === title ? 'active' : ''); 
-          li(class=isActive)
+          li
             a(href=page.url) #{page.name}

@@ -4,6 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require('express-session');
 
 var index = require('./routes/index');
 
@@ -16,12 +17,24 @@ app.locals.moment = require('moment');
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+// Session handling
+app.use(session({
+  secret: 'a super secret secret',
+  saveUninitialized: false,
+  resave: false
+}));
+// Ensure the user id is available on every page if needed
+app.use(function(req, res, next) {
+  res.locals.session = req.session || null;
+  next();
+});
 
 app.use('/', index);
 

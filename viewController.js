@@ -1,4 +1,5 @@
 var dataController = require('./data/dataController');
+var loginController = require('./data/loginController');
 var validator = require('validator');
 require('./helpers/dateHelpers.js');
 
@@ -6,13 +7,15 @@ require('./helpers/dateHelpers.js');
 const reviewPageName = 'Review';
 const createCardsPageName = 'Create Cards';
 const listCardsPageName = 'List Cards';
+const registerPageName = 'Register';
+const loginPageName = 'Login';
 
 // constant vals go here
 const maxCardsPerPage = 30;
 
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
-  dataController.getTodaysCards().then(function(cards) {
+  dataController.getTodaysCards(req.session.user).then(function(cards) {
     res.render('reviewPage', { 
       title: reviewPageName,
       cards: cards
@@ -88,7 +91,7 @@ exports.createCards_POST = function(req, res) {
     });
   }
 
-  dataController.newCards(cards).then(function(ids) {
+  dataController.newCards(cards, req.session.user).then(function(ids) {
     console.log(ids);
     // todo should redirect to the created card in the card list page.
     res.render('createCardsPage', {
@@ -101,8 +104,8 @@ exports.createCards_POST = function(req, res) {
 // List all the cards
 exports.listCards = function(req, res) {
   var offset = req.params.page * maxCardsPerPage;
-  dataController.getAllCards(maxCardsPerPage, offset).then(function(cards) {
-    dataController.getTotalNumberOfCards().then(function(totalCards) {
+  dataController.getAllCardsForUser(req.session.user, maxCardsPerPage, offset).then(function(cards) {
+    dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
         return;
@@ -127,4 +130,97 @@ exports.deleteCard = function(req, res) {
   }, function() {
     res.sendStatus(500);
   });
+}
+
+exports.login_GET = function(req, res) {
+  res.render('loginPage', {
+    title: loginPageName
+  });
+}
+
+exports.login_POST = function(req, res) {
+  // Helper to fail the form POST 
+  var failWithError = function(error) {
+    res.render('loginPage', {
+      title: loginPageName,
+      error: error
+    });
+  }
+
+  var username = req.body.username;
+  var password = req.body.password;
+
+  if (!username || !password) {
+    failWithError('Not all form elements were filled.');
+    return;
+  }
+  loginController.login(username, password).then(function(userId) {
+    // If success, regenerate the session with the userid
+    req.session.regenerate(function() {
+      req.session.user = userId;
+      res.redirect('/todaysCards');
+    });
+  }, function(err) {
+    // If failure, stay on the page with error listed
+    failWithError(err);
+    return;
+  });
+}
+
+exports.logout = function(req, res) {
+  req.session.destroy(function() {
+    res.redirect(302, '/login');
+  });  
+}
+
+exports.register_GET = function(req, res) {
+  res.render('registerPage', {
+    title: registerPageName
+  });
+}
+
+exports.register_POST = function(req, res) {
+  // Helper to fail the form POST 
+  var failWithError = function(error) {
+    res.render('registerPage', {
+      title: registerPageName,
+      error: error
+    });
+  }
+
+  var username = req.body.username;
+  var password1 = req.body.password;
+  var password2 = req.body.password2;
+
+  if (!username || !password1 || !password2) {
+    failWithError('Not all form elements were filled.');
+    return;
+  }
+
+  if (password1 !== password2) {
+    failWithError('Passwords didn\'t match.');
+    return;
+  }
+
+  // Create a new user with the given information
+  loginController.createUser(username, password1).then(function(id) {
+    if (!id) {
+      failWithError('Username is already taken');
+      return;
+    }
+    res.redirect('/login');
+  });
+}
+
+// Blocks access to any page that requires a login session.
+exports.restrict = function(req, res, next) {
+  if (req.session.user) {
+    next();
+  }
+  else {
+    res.render('loginPage', {
+      title: loginPageName,
+      error: 'Access denied'
+    });
+  }
 }

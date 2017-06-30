@@ -3,14 +3,14 @@ const SM2 = require('../helpers/SM2.js');
 require('../helpers/dateHelpers.js');
 
 
-exports.newCard = function(front, back) {
-    return db.addCard(front, back, 2.5).then(function(data) {
+exports.newCard = function(front, back, userId) {
+    return db.addCard(front, back, 2.5, userId).then(function(data) {
         return data.id;
     });
 }
 
-exports.newCards = function(cards) {
-    return db.addCards(cards).then(function(data) {
+exports.newCards = function(cards, userId) {
+    return db.addCards(cards, userId).then(function(data) {
         var ids = [];
         data.forEach(function(item) {
             ids.push(item.id);
@@ -29,6 +29,10 @@ exports.deleteCardByFront = function(front) {
             return db.deleteCard(cards[0].id);
         }
     });
+}
+
+exports.deleteAllForUser = function(userId) {
+    return db.deleteAllForUser(userId);
 }
 
 exports.deleteAll = function() {
@@ -57,16 +61,16 @@ exports.logReview = function(id, responseQuality) {
     });
 }
 
-exports.getTodaysCards = function() {
-    return db.getTodaysCards();
+exports.getTodaysCards = function(userId) {
+    return db.getTodaysCards(userId);
 }
 
-exports.getAllCards = function(limit, offset) {
-    return db.getAllCards(limit, offset);
+exports.getAllCardsForUser = function(userId, limit, offset) {
+    return db.getAllCardsForUser(userId, limit, offset);
 }
 
-exports.getTotalNumberOfCards = function() {
-    return db.getTotalNumberOfCards().then(function(data) {
+exports.getTotalNumberOfCards = function(userId) {
+    return db.getTotalNumberOfCards(userId).then(function(data) {
         return data.count;
     });
 }

@@ -7,6 +7,10 @@ var Promise = require('bluebird');
 
 var dataController = require('../data/dataController.js');
 
+// TEMP this is bad, but i don't want to work on this atm
+// Just put your user id here for now, no login required.
+const userId = 10;
+
 // Helper for reviewCards()
 var promptCard = function(index, card) {
     var q = [
@@ -56,7 +60,7 @@ var promptCard = function(index, card) {
 
 // CLI command implementations
 var count = function(options) {
-    return dataController.getTodaysCards().then(function(cards) {
+    return dataController.getTodaysCards(userId).then(function(cards) {
         switch(cards.length) {
             case 0:
                 console.log('There are no cards to review.');
@@ -72,7 +76,7 @@ var count = function(options) {
 }
 
 var reviewCards = function(options) {
-    return dataController.getTodaysCards().then(function(cards) {
+    return dataController.getTodaysCards(userId).then(function(cards) {
         if (cards.length === 0) {
             console.log('No cards to review.');
             process.exit(0);
@@ -102,12 +106,12 @@ var newCard = function(options) {
             console.log(cards);
         });
         
-        return dataController.newCards(cards).then(function(ids) {
+        return dataController.newCards(cards, userId).then(function(ids) {
             console.log('Added ' + ids.length + ' cards from csv ' + options.csv + ' to db.')
         });
     }
     else if (options.front && options.back) {
-        return dataController.newCard(options.front, options.back).then(function() {
+        return dataController.newCard(options.front, options.back, userId).then(function() {
             console.log('Added card { front: \'' + options.front + '\', back: \'' + options.back + '\'} to db.');
         });
     }

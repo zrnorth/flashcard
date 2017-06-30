@@ -4,7 +4,12 @@ block head-extras
   script(src='/js/create.js')
 
 block content
-  h1= title
+  h1 Create Cards
+  .results
+    if error
+      .alert.alert-danger(role="alert")= error
+    else if numNewCards
+      .alert.alert-success Created #{numNewCards} new cards!
   form.form-inline(method='POST' action='' autocomplete='off')
     .row
       .form-group
@@ -16,8 +21,4 @@ block content
 
     button.btn.btn-primary(type='submit') Submit
 
-  .results
-    if error
-      .alert.alert-danger(role="alert")= error
-    else if numNewCards
-      .alert.alert-success Created #{numNewCards} new cards!
+  

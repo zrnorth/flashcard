@@ -10,16 +10,24 @@ postgres -D /usr/local/var/postgres
 psql
 ```
 
-In a server called `test`, make a table called `cards`:
+In a server called `test`, make these tables:
 ```
-create table cards(
-    ID              SERIAL PRIMARY KEY      NOT NULL,
-    FRONT           TEXT                    NOT NULL,
-    BACK            TEXT                    NOT NULL,
-    NEXT_REVIEW     DATE                    NOT NULL,
-    DIFFICULTY      REAL                    NOT NULL,
-    REPS            INT                     NOT NULL
+create table users(
+    ID              SERIAL PRIMARY KEY          NOT NULL,
+    USERNAME        VARCHAR(200)                NOT NULL UNIQUE,
+    PASSWORD        VARCHAR(100)                NOT NULL
 );
+
+create table cards(
+    ID              SERIAL PRIMARY KEY          NOT NULL,
+    FRONT           TEXT                        NOT NULL,
+    BACK            TEXT                        NOT NULL,
+    NEXT_REVIEW     DATE                        NOT NULL,
+    DIFFICULTY      REAL                        NOT NULL,
+    REPS            INT                         NOT NULL,
+    OWNER_ID        INT REFERENCES users(ID)    ON DELETE CASCADE NOT NULL
+);
+
 ```
 Check `data/postgres.js:16` and make sure your local db information is input correctly. It should follow the format:
 `postgres://USERNAME:PASSWORD@localhost:PORT/DB_NAME`
@@ -40,6 +48,7 @@ Current commands:
     new                  make new flashcard(s), from direct input or a csv
     delete               delete a flashcard
 ```
+CLI currently doesn't have login information, so you just set the user id manually.
 
 ## Webapp
 Startup the web server by running `SET DEBUG=flashcard:* & npm run devstart`, then hit `localhost:3000`.
@@ -49,4 +58,4 @@ Check `routes/index.js` for routing info, or just click on the top bar to naviga
 ## Tests
 You can run some simple tests against a local db with `npm run test`. 
 
-`npm run populate` creates random cards, `npm run clear` deletes them. Add `-prod` to the commands to run against your cloud db.
+`npm run populate --userId=USER_ID --numCards=NUMBER_OF_CARDS` creates random cards, `npm run clear --userId=USER_ID` deletes them. Run `populate-prod` or `clear-prod` instead to run against your cloud db.
