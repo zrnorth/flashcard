@@ -1,10 +1,13 @@
 extends layout
 
 block head-extras
+  script(src='/js/lib/wanakana.min.js')
   script(src='/js/create.js')
 
 block content
   h1 Create Cards
+  p enable IME #[input(id='ime-enabled', type='checkbox', checked)]
+
   .results
     if error
       .alert.alert-danger(role="alert")= error
@@ -13,9 +16,9 @@ block content
   form.form-inline(method='POST' action='' autocomplete='off')
     .row
       .form-group
-        input.form-control(type='text', placeholder='Front of card', name='front', value='')
+        input.form-control(type='text', placeholder='Japanese side of card', name='front', value='', id='wanakana-input')
       .form-group
-        input.form-control(type='text', placeholder='Back of card', name='back', value='')
+        input.form-control(type='text', placeholder='English side of card', name='back', value='')
       button.btn.btn-success.btn-add
         span.glyphicon.glyphicon-plus
 

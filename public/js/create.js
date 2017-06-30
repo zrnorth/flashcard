@@ -1,3 +1,4 @@
+// Depends on /lib/wanakana.min.js
 $(function() {
   $(document).on('click', '.btn-add', function(e) {
     e.preventDefault();
@@ -15,5 +16,18 @@ $(function() {
       e.preventDefault();
       $(this).parents('.row:first').remove();
       return false;
+  }).on('click', '#ime-enabled', function(e) {  // setup the ime checkbox click handler
+    setWanakanaBinding($(this).is(':checked'));
   });
+  // First time setup
+  setWanakanaBinding($('#ime-enabled').is(':checked'));
 });
+
+function setWanakanaBinding(enabled) {
+  var input = document.getElementById('wanakana-input');
+  if (enabled) {
+    wanakana.bind(input);
+  } else {
+    wanakana.unbind(input);
+  }
+}
