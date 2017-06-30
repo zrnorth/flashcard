@@ -104,7 +104,7 @@ exports.createCards_POST = function(req, res) {
 // List all the cards
 exports.listCards = function(req, res) {
   var offset = req.params.page * maxCardsPerPage;
-  dataController.getAllCards(req.session.user, maxCardsPerPage, offset).then(function(cards) {
+  dataController.getAllCardsForUser(req.session.user, maxCardsPerPage, offset).then(function(cards) {
     dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
