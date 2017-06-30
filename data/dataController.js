@@ -31,6 +31,10 @@ exports.deleteCardByFront = function(front) {
     });
 }
 
+exports.deleteAllForUser = function(userId) {
+    return db.deleteAllForUser(userId);
+}
+
 exports.deleteAll = function() {
     return db.deleteAll();
 }

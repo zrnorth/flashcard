@@ -134,6 +134,11 @@ exports.deleteAll = function() {
     return postgres.none('DELETE FROM cards WHERE ID>0')
         .finally(pgp.end());
 }
+
+exports.deleteAllForUser = function(userId) {
+    return postgres.none('DELETE FROM cards WHERE OWNER_ID=$1', userId)
+        .finally(pgp.end());
+}
 /*
 create table cards(
     ID              SERIAL PRIMARY KEY          NOT NULL,
