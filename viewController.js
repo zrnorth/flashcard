@@ -3,13 +3,6 @@ var loginController = require('./data/loginController');
 var validator = require('validator');
 require('./helpers/dateHelpers.js');
 
-// page names go here
-const reviewPageName = 'Review';
-const createCardsPageName = 'Create Cards';
-const listCardsPageName = 'List Cards';
-const registerPageName = 'Register';
-const loginPageName = 'Login';
-
 // constant vals go here
 const maxCardsPerPage = 30;
 
@@ -17,7 +10,6 @@ exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
   dataController.getTodaysCards(req.session.user).then(function(cards) {
     res.render('reviewPage', { 
-      title: reviewPageName,
       cards: cards
     });
   })
@@ -37,9 +29,7 @@ exports.logReview = function(req, res) {
 
 // Get the form for creating a card
 exports.createCards_GET = function(req, res) {
-  res.render('createCardsPage', {
-    title: createCardsPageName
-  });
+  res.render('createCardsPage');
 }
 
 // submit the card creation request
@@ -47,7 +37,6 @@ exports.createCards_POST = function(req, res) {
   // helper to fail quickly and not continue through the function.
   var failWithError = function(error) {
     res.render('createCardsPage', {
-      title: createCardsPageName,
       error: error
     });
   }
@@ -95,7 +84,6 @@ exports.createCards_POST = function(req, res) {
     console.log(ids);
     // todo should redirect to the created card in the card list page.
     res.render('createCardsPage', {
-      title: createCardsPageName, 
       numNewCards: ids.length
     });
   });
@@ -112,7 +100,6 @@ exports.listCards = function(req, res) {
       }
       var totalPagesNeeded = Math.ceil(totalCards / maxCardsPerPage);
       res.render('listCardsPage', {
-        title: listCardsPageName,
         cards: cards,
         totalCards: totalCards,
         offset: offset,
@@ -133,16 +120,13 @@ exports.deleteCard = function(req, res) {
 }
 
 exports.login_GET = function(req, res) {
-  res.render('loginPage', {
-    title: loginPageName
-  });
+  res.render('loginPage');
 }
 
 exports.login_POST = function(req, res) {
   // Helper to fail the form POST 
   var failWithError = function(error) {
     res.render('loginPage', {
-      title: loginPageName,
       error: error
     });
   }
@@ -174,16 +158,13 @@ exports.logout = function(req, res) {
 }
 
 exports.register_GET = function(req, res) {
-  res.render('registerPage', {
-    title: registerPageName
-  });
+  res.render('registerPage');
 }
 
 exports.register_POST = function(req, res) {
   // Helper to fail the form POST 
   var failWithError = function(error) {
     res.render('registerPage', {
-      title: registerPageName,
       error: error
     });
   }
@@ -219,7 +200,6 @@ exports.restrict = function(req, res, next) {
   }
   else {
     res.render('loginPage', {
-      title: loginPageName,
       error: 'Access denied'
     });
   }
