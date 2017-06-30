@@ -5,6 +5,11 @@ block head-extras
 
 block content
   h1= title
+  .results
+    if error
+      .alert.alert-danger(role="alert")= error
+    else if numNewCards
+      .alert.alert-success Created #{numNewCards} new cards!
   form.form-inline(method='POST' action='' autocomplete='off')
     .row
       .form-group
@@ -16,8 +21,4 @@ block content
 
     button.btn.btn-primary(type='submit') Submit
 
-  .results
-    if error
-      .alert.alert-danger(role="alert")= error
-    else if numNewCards
-      .alert.alert-success Created #{numNewCards} new cards!
+  

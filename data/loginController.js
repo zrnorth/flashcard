@@ -16,7 +16,6 @@ exports.createUser = function(username, password) {
 }
 
 exports.login = function(username, password) {
-  // get user by username from db
   return db.getUserByUsername(username).then(function(data) {
     // user exists, so compare password.
     var hash = data.password;

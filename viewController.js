@@ -133,7 +133,6 @@ exports.deleteCard = function(req, res) {
 }
 
 exports.login_GET = function(req, res) {
-
   res.render('loginPage', {
     title: loginPageName
   });
@@ -155,14 +154,23 @@ exports.login_POST = function(req, res) {
     failWithError('Not all form elements were filled.');
     return;
   }
-  loginController.login(username, password).then(function(id) {
-    // temp
-    failWithError('login was successful!: ' + id);
-    return;
-  }).catch(function(error) {
-    failWithError(error);
+  loginController.login(username, password).then(function(userId) {
+    // If success, regenerate the session with the userid
+    req.session.regenerate(function() {
+      req.session.user = userId;
+      res.redirect('/todaysCards');
+    });
+  }, function(err) {
+    // If failure, stay on the page with error listed
+    failWithError(err);
     return;
   });
+}
+
+exports.logout = function(req, res) {
+  req.session.destroy(function() {
+    res.redirect(302, '/login');
+  });  
 }
 
 exports.register_GET = function(req, res) {
@@ -200,8 +208,19 @@ exports.register_POST = function(req, res) {
       failWithError('Username is already taken');
       return;
     }
-    res.render('loginPage', {
-      title: loginPageName
-    });
+    res.redirect('/login');
   });
+}
+
+// Blocks access to any page that requires a login session.
+exports.restrict = function(req, res, next) {
+  if (req.session.user) {
+    next();
+  }
+  else {
+    res.render('loginPage', {
+      title: loginPageName,
+      error: 'Access denied'
+    });
+  }
 }

@@ -5,33 +5,10 @@ var viewController = require('../viewController.js');
 
 /* GET default home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { 
-    title: 'Flashcards'
-  });
+  res.redirect('/login');
 });
 
-/* GET the cards for today. */
-router.get('/todaysCards', viewController.todaysCards);
-
-/* POST a review for a given card */
-router.post('/logReview', viewController.logReview);
-
-/* GET the create card page */
-router.get('/createCards', viewController.createCards_GET);
-
-/* POST a new card */
-router.post('/createCards', viewController.createCards_POST);
-
-/* GET the list of all cards */
-router.get('/listCards', function(req, res) {
-  res.redirect('/listCards/0');
-});
-
-/* GET the list all cards at a specific page */
-router.get('/listCards/:page', viewController.listCards);
-
-/* DELETE a card by id */
-router.delete('/deleteCard', viewController.deleteCard);
+// Unrestricted pages
 
 /* GET the login page */
 router.get('/login', viewController.login_GET);
@@ -44,5 +21,33 @@ router.get('/register', viewController.register_GET);
 
 /* POST a user registration */
 router.post('/register', viewController.register_POST);
+
+/* GET a logout request */
+router.get('/logout', viewController.logout);
+
+// Login-restricted pages
+
+/* GET the cards for today. */
+router.get('/todaysCards', viewController.restrict, viewController.todaysCards);
+
+/* POST a review for a given card */
+router.post('/logReview', viewController.restrict, viewController.logReview);
+
+/* GET the create card page */
+router.get('/createCards', viewController.restrict, viewController.createCards_GET);
+
+/* POST a new card */
+router.post('/createCards', viewController.restrict, viewController.createCards_POST);
+
+/* GET the list of all cards */
+router.get('/listCards', viewController.restrict, function(req, res) {
+  res.redirect('/listCards/0');
+});
+
+/* GET the list all cards at a specific page */
+router.get('/listCards/:page', viewController.restrict, viewController.listCards);
+
+/* DELETE a card by id */
+router.delete('/deleteCard', viewController.restrict, viewController.deleteCard);
 
 module.exports = router;

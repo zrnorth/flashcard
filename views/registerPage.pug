@@ -3,6 +3,9 @@ extends layout
 block content
   .main.container
     .row
+      if error
+        .alert.alert-danger(role="alert")= error
+    .row
       .col-md-6.col-md-offset-3
         h1.display-4.m-b-2= title
         form(method='POST' action='/register')
@@ -16,6 +19,3 @@ block content
             label(for='password2') Confirm Password
             input.form-control(type='password' id='password2' placeholder='confirm password' name='password2' autocomplete='off')
           button.btn.btn-primary(type='submit') Register
-    .row
-      if error
-        .alert.alert-danger(role="alert")= error
