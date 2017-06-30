@@ -15,7 +15,7 @@ const maxCardsPerPage = 30;
 
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
-  dataController.getTodaysCards().then(function(cards) {
+  dataController.getTodaysCards(req.session.user).then(function(cards) {
     res.render('reviewPage', { 
       title: reviewPageName,
       cards: cards
@@ -91,7 +91,7 @@ exports.createCards_POST = function(req, res) {
     });
   }
 
-  dataController.newCards(cards).then(function(ids) {
+  dataController.newCards(cards, req.session.user).then(function(ids) {
     console.log(ids);
     // todo should redirect to the created card in the card list page.
     res.render('createCardsPage', {
@@ -104,8 +104,8 @@ exports.createCards_POST = function(req, res) {
 // List all the cards
 exports.listCards = function(req, res) {
   var offset = req.params.page * maxCardsPerPage;
-  dataController.getAllCards(maxCardsPerPage, offset).then(function(cards) {
-    dataController.getTotalNumberOfCards().then(function(totalCards) {
+  dataController.getAllCards(req.session.user, maxCardsPerPage, offset).then(function(cards) {
+    dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
         return;

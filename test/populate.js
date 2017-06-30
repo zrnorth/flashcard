@@ -15,6 +15,12 @@ const cards = [
     }
 ];
 
-dataController.newCards(cards).then(function(newCardIds) {
+const userId = process.env.npm_config_userId || process.env.USER_ID || null;
+if (!userId) {
+    console.error('Need a user id to add the cards to. Use --userId=USER_ID');
+    return;
+}
+
+dataController.newCards(cards, parseInt(userId)).then(function(newCardIds) {
   console.log('Added some new cards with ids ' + newCardIds);
 });

@@ -40,12 +40,36 @@ switch (process.env.NODE_ENV) {
 // Setup the connection to postgres
 const postgres = pgp(databaseUrl);
 
+// --- USER operations
+exports.createUser = function(username, hashedPassword) {
+    return postgres.one('INSERT INTO users (USERNAME, PASSWORD) values ($1, $2) RETURNING ID', [username, hashedPassword])
+        .finally(pgp.end());
+}
+
+exports.getUserByUsername = function(username) {
+    return postgres.one('SELECT * FROM users WHERE USERNAME=$1', [username])
+        .finally(pgp.end());
+}
+
+exports.deleteUser = function(id) {
+    return postgres.none('DELETE FROM users where ID=$1', [id])
+        .finally(pgp.end());
+}
+
+/*
+create table users(
+    ID              SERIAL PRIMARY KEY          NOT NULL,
+    USERNAME        VARCHAR(200)                NOT NULL UNIQUE,
+    PASSWORD        VARCHAR(100)                NOT NULL
+);
+*/
+
 // ----- CARD operations
 
 // limit and offset are used for pagination, but not required.
 // row number is the sequential order of the cards (no gaps)
-exports.getAllCards = function(limit, offset) {
-    var sql = 'SELECT ROW_NUMBER() OVER (ORDER BY ID), * FROM cards ORDER BY ID';
+exports.getAllCardsForUser = function(userId, limit, offset) {
+    var sql = 'SELECT ROW_NUMBER() OVER (ORDER BY ID), * FROM cards WHERE OWNER_ID=' + userId + ' ORDER BY ID';
     if (limit !== undefined && offset !== undefined) {
         sql += ' LIMIT ' + limit + ' OFFSET ' + offset;
     }
@@ -53,28 +77,28 @@ exports.getAllCards = function(limit, offset) {
         .finally(pgp.end());
 }
 
-exports.getTotalNumberOfCards = function() {
-    return postgres.one('SELECT count(*) AS count FROM cards')
+exports.getTotalNumberOfCards = function(userId) {
+    return postgres.one('SELECT count(*) AS count FROM cards WHERE OWNER_ID=$1', [userId])
         .finally(pgp.end());
 }
 
-exports.getTodaysCards = function() {
-    return postgres.any('SELECT * FROM cards WHERE NEXT_REVIEW <= CURRENT_DATE ORDER BY RANDOM()')
+exports.getTodaysCards = function(userId) {
+    return postgres.any('SELECT * FROM cards WHERE OWNER_ID=$1 AND NEXT_REVIEW <= CURRENT_DATE ORDER BY RANDOM()', [userId])
         .finally(pgp.end());
 };
 
-exports.addCard = function(front, back, difficulty) {
-    return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES($1, $2, $3, $4, 0) RETURNING ID', 
-      [front, back, Date.simpleToday(), difficulty])
+exports.addCard = function(front, back, difficulty, userId) {
+    return postgres.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS, OWNER_ID) VALUES($1, $2, $3, $4, 0, $5) RETURNING ID', 
+      [front, back, Date.simpleToday(), difficulty, userId])
         .finally(pgp.end());
 };
 
-exports.addCards = function(cards) {
+exports.addCards = function(cards, userId) {
     return postgres.tx(function(t) {
         var queries = []
         cards.forEach(function(card) {
-            var q = t.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS) VALUES ($1, $2, CURRENT_DATE, 2.5, 0) RETURNING ID',
-                [card.front, card.back]); // No custom difficulty in bulk adding! Too annoying to do
+            var q = t.one('INSERT INTO cards(FRONT, BACK, NEXT_REVIEW, DIFFICULTY, REPS, OWNER_ID) VALUES ($1, $2, CURRENT_DATE, 2.5, 0, $3) RETURNING ID',
+                [card.front, card.back, userId]); // No custom difficulty in bulk adding! Too annoying to do
             queries.push(q);
         });
         return t.batch(queries);
@@ -118,24 +142,5 @@ create table cards(
     NEXT_REVIEW     DATE                        NOT NULL,
     DIFFICULTY      REAL                        NOT NULL,
     REPS            INT                         NOT NULL,
-    OWNER_ID        INT REFERENCES users(ID)    NOT NULL
+    OWNER_ID        INT REFERENCES users(ID)    ON DELETE CASCADE NOT NULL
 ); */
-
-// --- USER operations
-exports.createUser = function(username, hashedPassword) {
-    return postgres.one('INSERT INTO users (USERNAME, PASSWORD) values ($1, $2) RETURNING ID', [username, hashedPassword])
-        .finally(pgp.end());
-}
-
-exports.getUserByUsername = function(username) {
-    return postgres.one('SELECT * FROM users WHERE USERNAME=$1', [username])
-        .finally(pgp.end());
-}
-
-/*
-create table users(
-    ID              SERIAL PRIMARY KEY          NOT NULL,
-    USERNAME        VARCHAR(200)                NOT NULL UNIQUE,
-    PASSWORD        VARCHAR(100)                NOT NULL
-);
-*/
