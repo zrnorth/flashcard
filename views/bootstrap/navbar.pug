@@ -45,6 +45,5 @@ nav.navbar.navbar-default
       ul.nav.navbar-nav
         - var PAGES = (session.user ? LOGGED_IN_PAGES : LOGGED_OUT_PAGES);
         each page in PAGES
-          - var isActive = (page.name === title ? 'active' : ''); 
-          li(class=isActive)
+          li
             a(href=page.url) #{page.name}
