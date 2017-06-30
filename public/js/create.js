@@ -12,22 +12,26 @@ $(function() {
       .removeClass('btn-add').addClass('btn-remove')
       .removeClass('btn-success').addClass('btn-danger')
       .html('<span class="glyphicon glyphicon-minus"></span>');
+    // update ime bindings
+    updateIMEBinding();
   }).on('click', '.btn-remove', function(e) {
       e.preventDefault();
       $(this).parents('.row:first').remove();
       return false;
   }).on('click', '#ime-enabled', function(e) {  // setup the ime checkbox click handler
-    setWanakanaBinding($(this).is(':checked'));
+    updateIMEBinding();
   });
   // First time setup
-  setWanakanaBinding($('#ime-enabled').is(':checked'));
+  updateIMEBinding();
 });
 
-function setWanakanaBinding(enabled) {
-  var input = document.getElementById('wanakana-input');
-  if (enabled) {
-    wanakana.bind(input);
-  } else {
-    wanakana.unbind(input);
-  }
+function updateIMEBinding() {
+  var enabled = ($('#ime-enabled').is(':checked'));
+  document.querySelectorAll('.wanakana-input').forEach(function(input) {
+    if (enabled) {
+      wanakana.bind(input);
+    } else {
+      wanakana.unbind(input);
+    }
+  });
 }
