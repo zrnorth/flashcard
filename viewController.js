@@ -81,8 +81,6 @@ exports.createCards_POST = function(req, res) {
   }
 
   dataController.newCards(cards, req.session.user).then(function(ids) {
-    console.log(ids);
-    // todo should redirect to the created card in the card list page.
     res.render('createCardsPage', {
       numNewCards: ids.length
     });
