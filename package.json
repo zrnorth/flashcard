@@ -4,8 +4,8 @@
   "description": "A simple flashcard app",
   "main": "app.js",
   "scripts": {
-    "start": "node ./bin/www",
-    "devstart": "nodemon ./bin/www",
+    "start": "NODE_ENV=PROD node ./bin/www",
+    "devstart": "NODE_ENV=DEV nodemon ./bin/www",
     "test": "NODE_ENV=DEV node ./test/test_all",
     "populate": "NODE_ENV=DEV node ./test/populate",
     "clear": "NODE_ENV=DEV node ./test/clear",
