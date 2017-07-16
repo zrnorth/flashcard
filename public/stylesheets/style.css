@@ -60,6 +60,16 @@ body {
   visibility: visible;
 }
 
+.score-button-row {
+  margin-top: 5px;
+}
+
+.score-button-row button {
+  width: 20%;
+  line-height: 40px;
+  font-size: 20px;
+}
+
 button {
   margin-left: 3px;
   margin-right: 3px;

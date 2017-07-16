@@ -19,11 +19,14 @@ block content
           .back= card.back
         form(method='POST' action='' id=card.id).review
           h4 Score:
-          each val in [0, 1, 2]
-            button.btn.btn-danger.score-button(value=val) #{val}
-          each val in [3, 4, 5]
-            button.btn.btn-primary.score-button(value=val) #{val}
-          button.btn.btn-warning.reminder-button ?
+          .score-button-row
+            each val in [0, 1, 2]
+              button.btn.btn-danger.score-button(value=val) #{val}
+          .score-button-row
+            each val in [3, 4, 5]
+              button.btn.btn-primary.score-button(value=val) #{val}
+          .score-button-row
+            button.btn.btn-warning.reminder-button ?
 
     else
       h4 No reviews today! ✔

@@ -9,6 +9,13 @@ To start a local db for development, in seperate tabs run:
 postgres -D /usr/local/var/postgres
 psql
 ```
+some reminders for psql:
+```
+\l lists all databases
+\c DATABASE connects to a database
+\dt lists all tables in the db
+\d+ TABLE lists columns in a table
+```
 
 In a server called `test`, make these tables:
 ```
