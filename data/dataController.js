@@ -4,18 +4,28 @@ require('../helpers/dateHelpers.js');
 
 
 exports.newCard = function(front, back, userId) {
-    return db.addCard(front, back, 2.5, userId).then(function(data) {
+    return db.addCard(front, back, 2.5, userId)
+    .then(function(data) {
         return data.id;
     });
 }
 
 exports.newCards = function(cards, userId) {
-    return db.addCards(cards, userId).then(function(data) {
+    return db.addCards(cards, userId)
+    .then(function(data) {
         var ids = [];
         data.forEach(function(item) {
             ids.push(item.id);
         });
         return ids;
+    })
+    .catch(function(error) {
+        if (error.message && error.message.includes('unique constraint')) {
+            throw error.first.detail;
+        }
+        else {
+            throw error;
+        }
     });
 }
 

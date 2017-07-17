@@ -147,5 +147,6 @@ create table cards(
     NEXT_REVIEW     DATE                        NOT NULL,
     DIFFICULTY      REAL                        NOT NULL,
     REPS            INT                         NOT NULL,
-    OWNER_ID        INT REFERENCES users(ID)    ON DELETE CASCADE NOT NULL
+    OWNER_ID        INT REFERENCES users(ID)    ON DELETE CASCADE NOT NULL,
+    UNIQUE(FRONT, BACK)
 ); */

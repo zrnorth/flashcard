@@ -6,6 +6,13 @@ require('./helpers/dateHelpers.js');
 // constant vals go here
 const maxCardsPerPage = 30;
 
+// Helper to render failed pages
+var failWithError = function(res, pageName, error) {
+  res.render(pageName, {
+    error: error
+  });
+}
+
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
   dataController.getTodaysCards(req.session.user).then(function(cards) {
@@ -34,18 +41,11 @@ exports.createCards_GET = function(req, res) {
 
 // submit the card creation request
 exports.createCards_POST = function(req, res) {
-  // helper to fail quickly and not continue through the function.
-  var failWithError = function(error) {
-    res.render('createCardsPage', {
-      error: error
-    });
-  }
-
   // Validate the input before passing it in
   var fronts = req.body.front;
   var backs = req.body.back;
   if (!fronts || !backs) {
-    failWithError('Input a card before hitting submit.');
+    failWithError(res, 'createCardsPage', 'Input a card before hitting submit.');
     return;
   }
   // If there is only 1 card being input, it doesn't make it an array.
@@ -63,7 +63,7 @@ exports.createCards_POST = function(req, res) {
 
     //Check that fields are not empty
     if (validator.isEmpty(front) || validator.isEmpty(back)) {
-      failWithError('You missed a field on one of the cards.');
+      failWithError(res, 'createCardsPage', 'You missed a field on one of the cards.');
       return;
     }
 
@@ -80,11 +80,15 @@ exports.createCards_POST = function(req, res) {
     });
   }
 
-  dataController.newCards(cards, req.session.user).then(function(ids) {
-    res.render('createCardsPage', {
-      numNewCards: ids.length
+  dataController.newCards(cards, req.session.user)
+    .then(function(ids) {
+      res.render('createCardsPage', {
+        numNewCards: ids.length
+      });
+    })
+    .catch(function(err) {
+      failWithError(res, 'createCardsPage', err);
     });
-  });
 }
 
 // List all the cards
@@ -122,18 +126,11 @@ exports.login_GET = function(req, res) {
 }
 
 exports.login_POST = function(req, res) {
-  // Helper to fail the form POST 
-  var failWithError = function(error) {
-    res.render('loginPage', {
-      error: error
-    });
-  }
-
   var username = req.body.username;
   var password = req.body.password;
 
   if (!username || !password) {
-    failWithError('Not all form elements were filled.');
+    failWithError(res, 'loginPage', 'Not all form elements were filled.');
     return;
   }
   loginController.login(username, password).then(function(userId) {
@@ -144,7 +141,7 @@ exports.login_POST = function(req, res) {
     });
   }, function(err) {
     // If failure, stay on the page with error listed
-    failWithError(err);
+    failWithError(res, 'loginPage', err);
     return;
   });
 }
@@ -160,33 +157,27 @@ exports.register_GET = function(req, res) {
 }
 
 exports.register_POST = function(req, res) {
-  // Helper to fail the form POST 
-  var failWithError = function(error) {
-    res.render('registerPage', {
-      error: error
-    });
-  }
-
   var username = req.body.username;
   var password1 = req.body.password;
   var password2 = req.body.password2;
 
   if (!username || !password1 || !password2) {
-    failWithError('Not all form elements were filled.');
+    failWithError(res, 'registerPage', 'Not all form elements were filled.');
     return;
   }
 
   if (password1 !== password2) {
-    failWithError('Passwords didn\'t match.');
+    failWithError(res, 'registerPage', 'Passwords didn\'t match.');
     return;
   }
 
   // Create a new user with the given information
   loginController.createUser(username, password1).then(function(id) {
     if (!id) {
-      failWithError('Username is already taken');
+      failWithError(res, 'registerPage', 'Username is already taken');
       return;
     }
+    // else we good, so send em to the login page
     res.redirect('/login');
   });
 }
