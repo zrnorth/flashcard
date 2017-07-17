@@ -18,7 +18,7 @@ $(function() {
       e.preventDefault();
       $(this).parents('.row:first').remove();
       return false;
-  }).on('click', '#ime-enabled', function(e) {  // setup the ime checkbox click handler
+  }).on('click', '#input-format-form', function(e) { 
     updateIMEBinding();
   });
   // First time setup
@@ -26,12 +26,21 @@ $(function() {
 });
 
 function updateIMEBinding() {
-  var enabled = ($('#ime-enabled').is(':checked'));
+  var hiraganaEnabled = ($('#hiragana-enabled').is(':checked'));
+  var katakanaEnabled = ($('#katakana-enabled').is(':checked'));
+
   document.querySelectorAll('.wanakana-input').forEach(function(input) {
-    if (enabled) {
-      wanakana.bind(input);
-    } else {
-      wanakana.unbind(input);
+    wanakana.unbind(input);
+
+    if (hiraganaEnabled) {
+      wanakana.bind(input, {
+        IMEMode: 'toHiragana'
+      });
+    }
+    else if (katakanaEnabled) {
+      wanakana.bind(input, {
+        IMEMode: 'toKatakana'
+      });
     }
   });
 }

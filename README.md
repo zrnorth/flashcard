@@ -44,6 +44,8 @@ Check `data/postgres.js:16` and make sure your local db information is input cor
 The app uses the env variables `NODE_ENV` and `DATABASE_URL` to determine where to point the db. You can run locally against the cloud db by setting 
 `NODE_ENV=PROD` and `export DATABASE_URL=$(heroku config:get DATABASE_URL -a YOUR_HEROKU_APP_NAME)`.
 
+`heroku pg:psql` to connect to the cloud (prod) db.
+
 It will spit out errors if you need to update these.
 
 ## CLI

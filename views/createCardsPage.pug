@@ -6,7 +6,10 @@ block head-extras
 
 block content
   h1 Create Cards
-  p enable IME #[input(id='ime-enabled', type='checkbox', checked)]
+  form#input-format-form
+    span hiragana #[input(id='hiragana-enabled', name='input-format', type='radio')]
+    span katakana #[input(id='katakana-enabled', name='input-format', type='radio')]
+    span none #[input(id='none-enabled', name='input-format', type='radio', checked)]
 
   .results
     if error

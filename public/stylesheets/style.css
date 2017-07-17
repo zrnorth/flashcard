@@ -104,3 +104,7 @@ button {
 td {
   text-align: left;
 }
+
+#input-format-form span {
+  margin: 10px;
+}
