@@ -61,8 +61,13 @@ exports.createCards_POST = function(req, res) {
     var front = fronts[i];
     var back = backs[i];
 
-    //Check that fields are not empty
-    if (validator.isEmpty(front) || validator.isEmpty(back)) {
+    // If both fields are empty, just skip this one
+    if (validator.isEmpty(front) && validator.isEmpty(back)) {
+      continue;
+    }
+
+    // If one of the two fields is empty, fail with validation error
+    else if (validator.isEmpty(front) || validator.isEmpty(back)) {
       failWithError(res, 'createCardsPage', 'You missed a field on one of the cards.');
       return;
     }
