@@ -13,11 +13,20 @@ var failWithError = function(res, pageName, error) {
   });
 }
 
+// Helper to unescape cards' text when received back from datacontroller
+var unescapedCards = function(cards) {
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].front = validator.unescape(cards[i].front);
+    cards[i].back = validator.unescape(cards[i].back);
+  }
+  return cards;
+}
+
 exports.todaysCards = function(req, res) {
   // Get todays cards from the data controller, then pass them to the view
   dataController.getTodaysCards(req.session.user).then(function(cards) {
     res.render('reviewPage', { 
-      cards: cards
+      cards: unescapedCards(cards)
     });
   })
 }
@@ -107,7 +116,7 @@ exports.listCards = function(req, res) {
       }
       var totalPagesNeeded = Math.ceil(totalCards / maxCardsPerPage);
       res.render('listCardsPage', {
-        cards: cards,
+        cards: unescapedCards(cards),
         totalCards: totalCards,
         offset: offset,
         pages: totalPagesNeeded,
