@@ -75,7 +75,7 @@ function toggleReminder() {
 
 function flipCard() {
   $('.review-container').first().toggleClass('flipped');
-  FRONT_IS_UP = !FRONT_IS_UP;
+  FRONT_IS_UP = !$('.review-container').first().hasClass('flipped');
 }
 
 function updateCardsLeftText() {
