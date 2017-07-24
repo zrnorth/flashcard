@@ -33,7 +33,7 @@ block content
   if pages > 1
     // Handle the enabling / disabled the prev & next buttons
     -
-      const base = '/listCards/';
+      const base = '/listCards/' + orderedBy + '/';
       var previousLink = base + (currentPage-1);
       var previousLinkDisabled = '';
       var nextLink = base + (currentPage+1);
@@ -57,7 +57,7 @@ block content
         - for (var i = 0; i < pages; i++) {
           - var active = (i===currentPage ? 'active' : '');
           li.page-item(class=active)
-            a.page-link(href='/listCards/'+i) #{i}
+            a.page-link(href=base+i) #{i}
         - }
 
         li.page-item(class=nextLinkDisabled)

@@ -4,7 +4,8 @@ var validator = require('validator');
 require('./helpers/dateHelpers.js');
 
 // constant vals go here
-const maxCardsPerPage = 30;
+const maxCardsPerPage = 50;
+const validColumnsToOrderBy = ['ID', 'front', 'back', 'next_review', 'difficulty', 'reps'];
 
 // Helper to render failed pages
 var failWithError = function(res, pageName, error) {
@@ -107,8 +108,15 @@ exports.createCards_POST = function(req, res) {
 
 // List all the cards
 exports.listCards = function(req, res) {
+  // Validate that we are ordering by a valid column.
+  var orderBy = req.params.orderBy;
+  if (!orderBy || !validColumnsToOrderBy.includes(orderBy)) {
+    res.sendStatus('404');
+    return;
+  }
+
   var offset = req.params.page * maxCardsPerPage;
-  dataController.getAllCardsForUser(req.session.user, maxCardsPerPage, offset).then(function(cards) {
+  dataController.getAllCardsForUser(req.session.user, maxCardsPerPage, offset, orderBy).then(function(cards) {
     dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
@@ -119,6 +127,7 @@ exports.listCards = function(req, res) {
         cards: unescapedCards(cards),
         totalCards: totalCards,
         offset: offset,
+        orderedBy: orderBy,
         pages: totalPagesNeeded,
         currentPage: parseInt(req.params.page)
       });

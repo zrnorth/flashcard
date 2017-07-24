@@ -75,8 +75,8 @@ exports.getTodaysCards = function(userId) {
     return db.getTodaysCards(userId);
 }
 
-exports.getAllCardsForUser = function(userId, limit, offset) {
-    return db.getAllCardsForUser(userId, limit, offset);
+exports.getAllCardsForUser = function(userId, limit, offset, orderBy) {
+    return db.getAllCardsForUser(userId, limit, offset, orderBy);
 }
 
 exports.getTotalNumberOfCards = function(userId) {

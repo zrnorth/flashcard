@@ -41,11 +41,11 @@ router.post('/createCards', viewController.restrict, viewController.createCards_
 
 /* GET the list of all cards */
 router.get('/listCards', viewController.restrict, function(req, res) {
-  res.redirect('/listCards/0');
+  res.redirect('/listCards/ID/0');
 });
 
-/* GET the list all cards at a specific page */
-router.get('/listCards/:page', viewController.restrict, viewController.listCards);
+/* GET the list of all cards at a specific page with a given ordering */
+router.get('/listCards/:orderBy/:page', viewController.restrict, viewController.listCards);
 
 /* DELETE a card by id */
 router.delete('/deleteCard', viewController.restrict, viewController.deleteCard);

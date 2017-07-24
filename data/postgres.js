@@ -68,8 +68,10 @@ create table users(
 
 // limit and offset are used for pagination, but not required.
 // row number is the sequential order of the cards (no gaps)
-exports.getAllCardsForUser = function(userId, limit, offset) {
-    var sql = 'SELECT ROW_NUMBER() OVER (ORDER BY ID), * FROM cards WHERE OWNER_ID=' + userId + ' ORDER BY ID';
+// the string formatting is funky here, but the $1 $2 method is hard to do with limit / offset and
+// i got tired of looking for the clean way to do it :)
+exports.getAllCardsForUser = function(userId, limit, offset, orderBy='ID') {
+    var sql = 'SELECT ROW_NUMBER() OVER (ORDER BY ' + orderBy + '), * FROM cards WHERE OWNER_ID=' + userId + ' ORDER BY ' + orderBy;
     if (limit !== undefined && offset !== undefined) {
         sql += ' LIMIT ' + limit + ' OFFSET ' + offset;
     }
