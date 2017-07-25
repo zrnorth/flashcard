@@ -49,6 +49,22 @@ exports.deleteAll = function() {
   return db.deleteAll();
 }
 
+exports.updateCardSide = function(id, sideToUpdate, newString) {
+  return db.getCard(id).then(function(card) {
+    if (sideToUpdate === "front") {
+      card.front = newString;
+    }
+    else if (sideToUpdate === "back") {
+      card.back = newString;
+    }
+    else throw new Error("sideToUpdate must be set to front or back.");
+
+    return db.updateCard(id, card.front, card.back, card.next_review, card.difficulty, card.reps).then(function(next_review) {
+      return card;
+    });
+  });
+}
+
 exports.logReview = function(id, responseQuality) {
   return db.getCard(id).then(function(card) {
     // If the review was correct, update the card's correct reps and difficulty in the db.

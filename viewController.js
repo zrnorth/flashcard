@@ -44,6 +44,20 @@ exports.logReview = function(req, res) {
   });
 }
 
+exports.updateCardSide = function(req, res) {
+  // Update the header to not cache anything
+  res.header("Cache-Control", "no-cache, no-store, must-revalidate");
+  res.header("Pragma", "no-cache");
+  res.header("Expires", 0);
+
+  dataController.updateCardSide(req.body.id, req.body.sideToUpdate, req.body.newString).then(function(card) {
+    res.status(200).send(card);
+  }, function(err) {
+    console.log(err);
+    res.sendStatus(500);
+  });
+}
+
 // Get the form for creating a card
 exports.createCards_GET = function(req, res) {
   res.render('createCardsPage');

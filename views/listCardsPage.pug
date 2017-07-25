@@ -30,8 +30,8 @@ block content
           each card in cards
             tr(id="card-id-" + card.id)
               th(scope="row")= card.row_number
-              td= card.front
-              td= card.back
+              td.editable-front= card.front
+              td.editable-back= card.back
               td= moment(card.next_review).format('MMMM Do, YYYY')
               td= card.difficulty
               td= card.reps

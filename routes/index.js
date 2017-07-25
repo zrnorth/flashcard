@@ -30,6 +30,9 @@ router.get('/logout', viewController.logout);
 /* GET the cards for today. */
 router.get('/todaysCards', viewController.restrict, viewController.todaysCards);
 
+/* PUT (Update) a card with a given id. */
+router.post('/updateCardSide', viewController.restrict, viewController.updateCardSide);
+
 /* POST a review for a given card */
 router.post('/logReview', viewController.restrict, viewController.logReview);
 
