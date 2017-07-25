@@ -1,14 +1,13 @@
 extends layout
 
 block head-extras
-  script(src='/js/lib/wanakana.min.js')
   script(src='/js/create.js')
+  script(src='/js/lib/kana-input.min.js')
 
 block content
   h1 Create Cards
   form#input-format-form
-    span hiragana #[input(id='hiragana-enabled', name='input-format', type='radio')]
-    span katakana #[input(id='katakana-enabled', name='input-format', type='radio')]
+    span kana #[input(id='kana-enabled', name='input-format', type='radio')]
     span none #[input(id='none-enabled', name='input-format', type='radio', checked)]
 
   .results
@@ -21,10 +20,8 @@ block content
       .form-group
         input.form-control(type='text', placeholder='English side of card', name='front', value='')
       .form-group
-        input.form-control(type='text', placeholder='Japanese side of card', name='back', value='', class='wanakana-input')
+        input.form-control.japanese-input(type='text', placeholder='Japanese side of card', name='back', value='')
       button.btn.btn-success.btn-add
         span.glyphicon.glyphicon-plus
 
     button.btn.btn-primary(type='submit') Submit
-
-  

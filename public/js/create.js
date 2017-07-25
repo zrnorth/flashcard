@@ -12,35 +12,19 @@ $(function() {
       .removeClass('btn-add').addClass('btn-remove')
       .removeClass('btn-success').addClass('btn-danger')
       .html('<span class="glyphicon glyphicon-minus"></span>');
-    // update ime bindings
-    updateIMEBinding();
+    updateKanaInput();
   }).on('click', '.btn-remove', function(e) {
-      e.preventDefault();
-      $(this).parents('.row:first').remove();
-      return false;
-  }).on('click', '#input-format-form', function(e) { 
-    updateIMEBinding();
+    e.preventDefault();
+    $(this).parents('.row:first').remove();
+    return false;
+  }).on('click', '#input-format-form', function(e) {
+    updateKanaInput();
   });
-  // First time setup
-  updateIMEBinding();
 });
 
-function updateIMEBinding() {
-  var hiraganaEnabled = ($('#hiragana-enabled').is(':checked'));
-  var katakanaEnabled = ($('#katakana-enabled').is(':checked'));
-
-  document.querySelectorAll('.wanakana-input').forEach(function(input) {
-    wanakana.unbind(input);
-
-    if (hiraganaEnabled) {
-      wanakana.bind(input, {
-        IMEMode: 'toHiragana'
-      });
-    }
-    else if (katakanaEnabled) {
-      wanakana.bind(input, {
-        IMEMode: 'toKatakana'
-      });
-    }
+var updateKanaInput = function() {
+  var enabled = $('#kana-enabled').is(':checked');
+  $('.japanese-input').each(function(i) {
+    $(this).attr('data-kana-input', enabled);
   });
 }
