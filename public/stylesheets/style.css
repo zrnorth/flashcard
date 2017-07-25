@@ -108,3 +108,12 @@ td {
 #input-format-form span {
   margin: 10px;
 }
+
+/* List cards page */
+.table a {
+  color: #333;
+}
+
+.table a.sorted {
+  color: #027f80;
+}

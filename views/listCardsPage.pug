@@ -11,12 +11,20 @@ block content
       table.table
         thead
           tr
-            th #
-            th Front
-            th Back
-            th Next Review Date
-            th Difficulty (lower scores are harder)
-            th Reps
+            -
+              var dbNameToPrettyNameMap = {
+                'ID': '#',
+                'front': 'Front',
+                'back': 'Back',
+                'next_review': 'Next Review Date',
+                'difficulty': 'Difficulty (lower scores are harder)',
+                'reps': 'Reps'
+              };
+
+            each prettyName, dbName in dbNameToPrettyNameMap
+              th
+                - var isOrderedField = (dbName == orderedBy);
+                a(href='/listCards/' + dbName + '/0/' class=(isOrderedField ? 'sorted' : '')) #{prettyName} #{(isOrderedField ? '↓' : '')}
             th Delete?
         tbody
           each card in cards
