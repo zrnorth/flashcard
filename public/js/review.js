@@ -89,16 +89,11 @@ function fitCardTextToContainer(cardContainer) {
     var n;
 
     if ($(line).width() > targetWidth) { // shrink it down
-        console.log('shrinking text');
-
-
       for (n = maxFontSize; n >= minFontSize && $(line).width() > targetWidth; --n) {
         $(this).css('font-size', n + 'px');
       }
     }
     else {  // blow it up
-        console.log('blowing up text');
-
       for (n = minFontSize; n <= maxFontSize && $(line).width() < targetWidth; ++n) {
         $(this).css('font-size', n + 'px');
       }
