@@ -43,6 +43,7 @@ function logReview(id, responseQuality) {
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify(payload),
+    timeout: 5000, // 5 seconds
     success: function(data) {
       var afterFadingOut; // Once we fade out, behavior differs based on whether we got the card right or not.
       if (data.repeat) { // we got the card wrong, so move it to the end of the reviews list
@@ -62,6 +63,11 @@ function logReview(id, responseQuality) {
       }
       $('.review-container').first().fadeOut(80, afterFadingOut);
       updateCardsLeftText();
+    },
+    error: function(jqxhr, textStatus, errorThrown) {
+      console.error("ERROR: " + textStatus);
+      $('#cards-left-banner').text('There was an error logging your review: ' + errorThrown);
+      $('#cards-left-banner').css('color', 'red');
     }
   });
 }
