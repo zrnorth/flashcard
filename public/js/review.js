@@ -117,11 +117,8 @@ function flipCard() {
 }
 
 function updateCardsLeftText() {
-  if (CARDS_LEFT > 1) {
-    $('#cards-left-banner').text(CARDS_LEFT + ' reviews to go.');
-  }
-  else if (CARDS_LEFT > 0) {
-    $('#cards-left-banner').text(CARDS_LEFT + ' review to go.');
+  if (CARDS_LEFT >= 1) {
+    $('#cards-left-banner').text(CARDS_LEFT);
   }
   else {
     $('#cards-left-banner').text('All done! ✔')

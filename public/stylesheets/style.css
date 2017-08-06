@@ -5,6 +5,11 @@ body {
 
 /* Reviews page */
 
+#cards-left-banner {
+  color: grey;
+  font-size: 48px;
+}
+
 .card-container {
   margin: 50px auto;
   height: 375px;

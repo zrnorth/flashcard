@@ -7,10 +7,11 @@ block head-extras
 
 
 block content
-  h1 Review
-  #cards-left-banner
+  h1#cards-left-banner
     if cards.length > 0
-      | There are #{cards.length} reviews today.
+      | #{cards.length}
+    else
+      | All caught up. ✔
   .reviews
     each card in cards
       .review-container
@@ -27,9 +28,6 @@ block content
               button.btn.btn-primary.score-button(value=val) #{val}
           .score-button-row
             button.btn.btn-warning.reminder-button ?
-
-    else
-      h4 No reviews today! ✔
 
   #reminder-text
     p 5 - perfect response
