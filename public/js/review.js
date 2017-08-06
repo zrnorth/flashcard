@@ -2,6 +2,9 @@ var CARDS_LEFT = -1;
 var FRONT_IS_UP = true; // true: front is showing, false: back is showing. used for validating keyboard input
 
 $(function() {
+  initCards();
+
+  // Click handlers
   $('.card-container').click(function (e) {
     flipCard();
   });
@@ -22,11 +25,9 @@ $(function() {
 
   $('#reminder-text').click(function(e) {
     toggleReminder();
-  })
+  });
 
-  revealTopReviewContainer();
-
-  // Listen for keypresses
+  // Keypress handler
   document.addEventListener('keydown', handleKeyboardInput);
 });
 
@@ -62,6 +63,48 @@ function logReview(id, responseQuality) {
       $('.review-container').first().fadeOut(80, afterFadingOut);
       updateCardsLeftText();
     }
+  });
+}
+
+function initCards() {
+  // First, iterate each review container, adjusting the font size, then hiding the review.
+  // Need to adjust the font sizes before hiding all the reviews because can't check
+  // font size on a non-visible element.
+  $('.review-container').each(function() {
+    fitCardTextToContainer($(this).children('.card-container'));
+    $(this).css('display', 'none');
+  });
+  // Finally, make the top card visible.
+  revealTopReviewContainer();
+}
+
+function fitCardTextToContainer(cardContainer) {
+  const minFontSize = 10;
+  const maxFontSize = 75;
+
+  $(cardContainer).children().each(function(i, text) {
+    // wrap the text in this html to ensure correct width measurement
+    var line = $(this).wrapInner('<span style="white-space:nowrap">').children()[0];
+    const targetWidth = cardContainer.width() - parseInt(cardContainer.css('margin-top'));
+    var n;
+
+    if ($(line).width() > targetWidth) { // shrink it down
+        console.log('shrinking text');
+
+
+      for (n = maxFontSize; n >= minFontSize && $(line).width() > targetWidth; --n) {
+        $(this).css('font-size', n + 'px');
+      }
+    }
+    else {  // blow it up
+        console.log('blowing up text');
+
+      for (n = minFontSize; n <= maxFontSize && $(line).width() < targetWidth; ++n) {
+        $(this).css('font-size', n + 'px');
+      }
+    }
+
+    $(this).text($(line).text()); // remove the html wrapper
   });
 }
 

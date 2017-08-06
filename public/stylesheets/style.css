@@ -4,9 +4,6 @@ body {
 }
 
 /* Reviews page */
-.review-container {
-  display: none;
-}
 
 .card-container {
   margin: 50px auto;
@@ -20,16 +17,15 @@ body {
   box-sizing: border-box;
   position: absolute;
   width: 100%;
-  min-height: 100%;
+  height: 100%;
   border-radius: 10px;
   font-size: 20px;
 
   /* animations */
   backface-visibility: hidden;
   transform-style: preserve-3d;
-  transition: all 0.4s;
+  transition: all 0.4s, font-size 0s;
 
-  /* Center the text */
   display: flex;
   justify-content: center;
   align-items: center;
