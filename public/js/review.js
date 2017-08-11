@@ -91,21 +91,22 @@ function fitCardTextToContainer(cardContainer) {
   $(cardContainer).children().each(function(i, text) {
     // wrap the text in this html to ensure correct width measurement
     var line = $(this).wrapInner('<span style="white-space:nowrap">').children()[0];
+
+    // We want the font to fill as much of the container (minus the margin) as possible
     const targetWidth = cardContainer.width() - parseInt(cardContainer.css('margin-top'));
-    var n;
-
-    if ($(line).width() > targetWidth) { // shrink it down
-      for (n = maxFontSize; n >= minFontSize && $(line).width() > targetWidth; --n) {
-        $(this).css('font-size', n + 'px');
-      }
+    // The font starts at 1px, so the width scales correctly.
+    var onePxWidth = $(line).width();
+    var calculatedFontSize = parseInt(targetWidth / onePxWidth);
+    // Ensure its inside the correct range of font sizes
+    if (calculatedFontSize > maxFontSize) {
+      calculatedFontSize = maxFontSize;
     }
-    else {  // blow it up
-      for (n = minFontSize; n <= maxFontSize && $(line).width() < targetWidth; ++n) {
-        $(this).css('font-size', n + 'px');
-      }
+    else if (calculatedFontSize < minFontSize) {
+      calculatedFontSize = minFontSize;
     }
+    $(this).css('font-size', calculatedFontSize + 'px');
 
-    $(this).text($(line).text()); // remove the html wrapper
+    $(this).text($(line).text()); // remove the html wrapper we added earlier
   });
 }
 
