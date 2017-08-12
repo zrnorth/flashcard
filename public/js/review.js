@@ -4,27 +4,30 @@ var FRONT_IS_UP = true; // true: front is showing, false: back is showing. used 
 $(function() {
   initCards();
 
-  // Click handlers
-  $('.card-container').click(function (e) {
-    flipCard();
-  });
+  // We handle click handlers in this verbose way because we want some odd behavior:
+  // If you click the card it should flip, but not if you click on the text.
+  $(document).click(function(e) {
+    if ($(e.target).is('.score-button')) {
+      e.preventDefault();
 
-  $('.score-button').click(function(e) {
-    e.preventDefault();
+      const id = parseInt($('.review').first().attr('id'));
+      const responseQuality = $(e.target).attr('value');
 
-    const id = parseInt($('.review').first().attr('id'));
-    const responseQuality = $(this).attr('value');
+      logReview(id, responseQuality);
+    }
 
-    logReview(id, responseQuality);
-  });
+    else if ($(e.target).is('.reminder-button')) {
+      e.preventDefault();
+      toggleReminder();
+    }
 
-  $('.reminder-button').click(function(e) {
-    e.preventDefault();
-    toggleReminder();
-  });
+    else if ($(e.target).is('#reminder-text')) {
+      toggleReminder();
+    }
 
-  $('#reminder-text').click(function(e) {
-    toggleReminder();
+    else if ($(e.target).is('.front') || $(e.target).is('.back')) {
+      flipCard();
+    }
   });
 
   // Keypress handler
