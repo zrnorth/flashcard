@@ -44,16 +44,15 @@ function getJishoWebAddress(kanjiToSearch = '') {
   return `http://jisho.org/search/${kanjiToSearch}%20%23kanji`;
 }
 
-exports.getLookupsForAllKanjiInString = function getLookupsForAllKanjiInString(str = '') {
-  var ret = [];
+exports.linkAllKanjiInString = function linkAllKanjiInString(str = '') {
+  var retString = '';
   for (var i = 0; i < str.length; i++) {
-    const c = str.charAt(i);
+    var c = str.charAt(i);
     if (this.isCharKanji(c)) {
-      ret.push({
-        kanji: c,
-        url: getJishoWebAddress(c)
-      });
+      var url = getJishoWebAddress(c);
+      c = `<a href=${url} target='_blank'>${c}</a>`;
     }
+    retString = retString.concat(c);
   }
-  return ret;
+  return retString;
 }

@@ -1,6 +1,7 @@
 var dataController = require('./data/dataController');
 var loginController = require('./data/loginController');
 var validator = require('validator');
+var kanjiHelper = require('./helpers/kanjiHelpers.js');
 require('./helpers/dateHelpers.js');
 
 // constant vals go here
@@ -23,12 +24,25 @@ var unescapedCards = function(cards) {
   return cards;
 }
 
+// Helper to replace any kanji in a card's string with an <a> link to its jisho page.
+var linkKanjiToCards = function(cards) {
+  for (var i = 0; i < cards.length; i++) {
+    cards[i].front = kanjiHelper.linkAllKanjiInString(cards[i].front);
+    cards[i].back = kanjiHelper.linkAllKanjiInString(cards[i].back);
+  }
+  return cards;
+}
+
 exports.review = function(req, res) {
   dataController.getTodaysCards(req.session.user).then(function(cards) {
+
+    var processedCards = unescapedCards(cards);
+    processedCards = linkKanjiToCards(processedCards);
+
     res.render('reviewPage', { 
-      cards: unescapedCards(cards)
+      cards: processedCards
     });
-  })
+  });
 }
 
 exports.logReview = function(req, res) {
