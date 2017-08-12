@@ -89,8 +89,7 @@ function fitCardTextToContainer(cardContainer) {
   const maxFontSize = 75;
 
   $(cardContainer).children().each(function(i, text) {
-    // wrap the text in this html to ensure correct width measurement
-    var line = $(this).wrapInner('<span style="white-space:nowrap">').children()[0];
+    var line = $(this).children()[0];
 
     // We want the font to fill as much of the container (minus the margin) as possible
     const targetWidth = cardContainer.width() - parseInt(cardContainer.css('margin-top'));
@@ -105,8 +104,6 @@ function fitCardTextToContainer(cardContainer) {
       calculatedFontSize = minFontSize;
     }
     $(this).css('font-size', calculatedFontSize + 'px');
-
-    $(this).text($(line).text()); // remove the html wrapper we added earlier
   });
 }
 

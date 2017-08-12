@@ -53,6 +53,9 @@ body {
   transform: rotateY(180deg);
 }
 
+.text-inner {
+  white-space: nowrap;
+}
 .review {
   visibility: hidden;
 }

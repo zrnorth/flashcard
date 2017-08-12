@@ -16,8 +16,10 @@ block content
     each card in cards
       .review-container
         .card-container
-          .front= card.front
-          .back= card.back
+          .front
+            span.text-inner= card.front
+          .back
+            span.text-inner= card.back
         form(method='POST' action='' id=card.id).review
           h4 Score:
           .score-button-row
