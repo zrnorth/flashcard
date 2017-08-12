@@ -4,31 +4,47 @@
 -
   const LOGGED_IN_PAGES = [
     {
-      "name": "Review",
-      "url": "/todaysCards"
+      "class": "navbar-left",
+      "pages": [
+        {
+          "name": "Review",
+          "url": "/todaysCards"
+        },
+        {
+          "name": "Create Cards",
+          "url": "/createCards"
+        },
+        {
+          "name": "List Cards",
+          "url": "/listCards"
+        }
+      ]
     },
     {
-      "name": "Create Cards",
-      "url": "/createCards"
-    },
-    {
-      "name": "List Cards",
-      "url": "/listCards"
-    },
-    {
-      "name": "Logout",
-      "url": "/logout"
+      "class": "navbar-right",
+      "pages":
+      [
+        {
+          "name": "Logout",
+          "url": "/logout"
+        }
+      ]
     }
   ];
 
   const LOGGED_OUT_PAGES = [
     {
-      "name": "Login",
-      "url": "/login"
-    },
-    {
-      "name": "Register",
-      "url": "/register"
+      "class": "navbar-right",
+      "pages": [
+        {
+          "name": "Login",
+          "url": "/login"
+        },
+        {
+          "name": "Register",
+          "url": "/register"
+        }
+      ]
     }
   ];
 
@@ -41,9 +57,10 @@ nav.navbar.navbar-default
         span.icon-bar
         span.icon-bar
       a.navbar-brand(href='/todaysCards') Flashcards
-    .collapse.navbar-collapse#navbar
-      ul.nav.navbar-nav
-        - var PAGES = (session.user ? LOGGED_IN_PAGES : LOGGED_OUT_PAGES);
-        each page in PAGES
-          li
-            a(href=page.url) #{page.name}
+    #navbar
+      - var PAGES = (session.user ? LOGGED_IN_PAGES : LOGGED_OUT_PAGES);
+      each pageGroup in PAGES
+        ul.nav.navbar-nav(class=pageGroup.class)
+          each page in pageGroup.pages
+            li
+              a(href=page.url) #{page.name}
