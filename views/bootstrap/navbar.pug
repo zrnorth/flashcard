@@ -8,15 +8,15 @@
       "pages": [
         {
           "name": "Review",
-          "url": "/review"
+          "link": "/review"
         },
         {
           "name": "Create Cards",
-          "url": "/createCards"
+          "link": "/createCards"
         },
         {
           "name": "List Cards",
-          "url": "/listCards"
+          "link": "/listCards"
         }
       ]
     },
@@ -26,7 +26,7 @@
       [
         {
           "name": "Logout",
-          "url": "/logout"
+          "link": "/logout"
         }
       ]
     }
@@ -38,11 +38,11 @@
       "pages": [
         {
           "name": "Login",
-          "url": "/login"
+          "link": "/login"
         },
         {
           "name": "Register",
-          "url": "/register"
+          "link": "/register"
         }
       ]
     }
@@ -56,11 +56,12 @@ nav.navbar.navbar-default
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand(href='/') Flashcards
+      a.navbar-brand(href='/review') Flashcards
     #navbar
       - var PAGES = (session.user ? LOGGED_IN_PAGES : LOGGED_OUT_PAGES);
       each pageGroup in PAGES
         ul.nav.navbar-nav(class=pageGroup.class)
           each page in pageGroup.pages
-            li
-              a(href=page.url) #{page.name}
+            - var activeIfSelected = (url.includes(page.link) ? 'active' : '');
+            li(class=activeIfSelected)
+              a(href=page.link) #{page.name}
