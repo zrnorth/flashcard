@@ -8,7 +8,7 @@
       "pages": [
         {
           "name": "Review",
-          "url": "/todaysCards"
+          "url": "/review"
         },
         {
           "name": "Create Cards",
@@ -56,7 +56,7 @@ nav.navbar.navbar-default
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand(href='/todaysCards') Flashcards
+      a.navbar-brand(href='/') Flashcards
     #navbar
       - var PAGES = (session.user ? LOGGED_IN_PAGES : LOGGED_OUT_PAGES);
       each pageGroup in PAGES

@@ -23,8 +23,7 @@ var unescapedCards = function(cards) {
   return cards;
 }
 
-exports.todaysCards = function(req, res) {
-  // Get todays cards from the data controller, then pass them to the view
+exports.review = function(req, res) {
   dataController.getTodaysCards(req.session.user).then(function(cards) {
     res.render('reviewPage', { 
       cards: unescapedCards(cards)
@@ -174,7 +173,7 @@ exports.login_POST = function(req, res) {
     // If success, regenerate the session with the userid
     req.session.regenerate(function() {
       req.session.user = userId;
-      res.redirect('/todaysCards');
+      res.redirect('/review');
     });
   }, function(err) {
     // If failure, stay on the page with error listed
