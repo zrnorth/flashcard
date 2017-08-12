@@ -30,8 +30,9 @@ app.use(session({
   saveUninitialized: false,
   resave: false
 }));
-// Ensure the user id is available on every page if needed
+// Ensure the user id (session) and url is available on every page if needed
 app.use(function(req, res, next) {
+  res.locals.url = req.originalUrl || null;
   res.locals.session = req.session || null;
   next();
 });

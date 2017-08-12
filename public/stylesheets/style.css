@@ -18,6 +18,10 @@ body {
   perspective: 900px;
 }
 
+.card-container a { 
+  color: #033e71;
+}
+
 .front, .back {
   box-sizing: border-box;
   position: absolute;

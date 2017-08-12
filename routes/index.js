@@ -27,8 +27,8 @@ router.get('/logout', viewController.logout);
 
 // Login-restricted pages
 
-/* GET the cards for today. */
-router.get('/todaysCards', viewController.restrict, viewController.todaysCards);
+/* GET the cards for review for today. */
+router.get('/review', viewController.restrict, viewController.review);
 
 /* PUT (Update) a card with a given id. */
 router.post('/updateCardSide', viewController.restrict, viewController.updateCardSide);
