@@ -29,12 +29,15 @@ block content
             each val in [3, 4, 5]
               button.btn.btn-primary.score-button(value=val) #{val}
           .score-button-row
-            button.btn.btn-warning.reminder-button ?
+            button.btn.btn-warning.reminder-button(value='scoring') ?
+            button.btn.btn-warning.reminder-button(value='kanji') 漢字
 
-  #reminder-text
+  #scoring-help-text.reminder-text
     p 5 - perfect response
     p 4 - correct response after a hesitation
     p 3 - correct response recalled with serious difficulty
     p 2 - incorrect response; where the correct one seemed easy to recall
     p 1 - incorrect response; the correct one remembered
     p 0 - complete blackout
+  #kanji-help-text.reminder-text
+    p.text-inner There was an error loading the kanji help text.

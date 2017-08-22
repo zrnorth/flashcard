@@ -1,5 +1,6 @@
 var CARDS_LEFT = -1;
 var FRONT_IS_UP = true; // true: front is showing, false: back is showing. used for validating keyboard input
+var FADE_TIME = 200; // 200 ms, equivalent to 'fast'
 
 $(function() {
   initCards();
@@ -18,11 +19,11 @@ $(function() {
 
     else if ($(e.target).is('.reminder-button')) {
       e.preventDefault();
-      toggleReminder();
+      toggleReminder(e.target.value);
     }
 
-    else if ($(e.target).is('#reminder-text')) {
-      toggleReminder();
+    else if ($(e.target).is('.reminder-text')) {
+      $(e.target).fadeToggle(FADE_TIME);
     }
 
     else if ($(e.target).is('.front') || $(e.target).is('.back')) {
@@ -34,12 +35,71 @@ $(function() {
   document.addEventListener('keydown', handleKeyboardInput);
 });
 
+function initCards() {
+  // First, iterate each review container, adjusting the font size, then hiding the review.
+  // Need to adjust the font sizes before hiding all the reviews because can't check
+  // font size on a non-visible element.
+  $('.review-container').each(function() {
+    fitCardTextToContainer($(this).children('.card-container'));
+    $(this).css('display', 'none');
+  });
+  // Finally, make the first card visible.
+  nextCard();
+}
+
+function nextCard() {
+  // Make the top card visible
+  $('.review-container').first().fadeToggle(FADE_TIME);
+
+  // Populate the kanji help card for the newly flipped top card.
+  const payload = {
+    kanjiString: $('.back').first().text()
+  };
+  $.ajax({
+    url: '/getKanjiData',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(payload),
+    timeout: 5000,
+    success: function(data) {
+      $('#kanji-help-text').html(getFormattedKanjiHelpText(data.kanjiData));
+      // TODO would be cool if this worked
+      // fitCardTextToContainer($('#kanji-help-text'));
+    },
+    error: function(jqxhr, textStatus, errorThrown) {
+      console.error("ERROR: " + textStatus);
+    }
+  });
+}
+
+// Helper for above.
+// Given an array of kanjiData, formats it into a nice string for displaying in the reminder.
+function getFormattedKanjiHelpText(kanjiDataArray) {
+  var outputHTML = '';
+  if (kanjiDataArray.length === 0) {
+    outputHTML = '<p>No kanji.</p>';
+  }
+  for (var i = 0; i < kanjiDataArray.length; i++) {
+    var kanjiData = kanjiDataArray[i];
+    outputHTML += '<p>' + kanjiData.kanji + ': ' + kanjiData.heisig + '</p>';
+  }
+  return outputHTML;
+}
+
+function flipCard() {
+  $('.review-container').first().toggleClass('flipped');
+  FRONT_IS_UP = !$('.review-container').first().hasClass('flipped');
+}
+
 function logReview(id, responseQuality) {
   console.log('Logging score of ' + responseQuality + ' for card #' + id);
   const payload = {
     id: id,
     responseQuality: responseQuality
   };
+
+  // First, close all reminders
+  toggleReminder();
 
   $.ajax({
     url: '/logReview',
@@ -53,7 +113,7 @@ function logReview(id, responseQuality) {
         afterFadingOut = function() {
           flipCard();
           $(this).appendTo('.reviews');
-          revealTopReviewContainer();
+          nextCard();
         }
       }
       else {
@@ -61,11 +121,17 @@ function logReview(id, responseQuality) {
         CARDS_LEFT -= 1;
         afterFadingOut = function() {
           $(this).remove();
-          revealTopReviewContainer();
+          nextCard();
         }
       }
       $('.review-container').first().fadeOut(80, afterFadingOut);
-      updateCardsLeftText();
+      // Update the number of cards left, displayed at the top of the screen.
+      if (CARDS_LEFT >= 1) {
+        $('#cards-left-banner').text(CARDS_LEFT);
+      }
+      else {
+        $('#cards-left-banner').text('All done! ✔')
+      }
     },
     error: function(jqxhr, textStatus, errorThrown) {
       console.error("ERROR: " + textStatus);
@@ -75,18 +141,27 @@ function logReview(id, responseQuality) {
   });
 }
 
-function initCards() {
-  // First, iterate each review container, adjusting the font size, then hiding the review.
-  // Need to adjust the font sizes before hiding all the reviews because can't check
-  // font size on a non-visible element.
-  $('.review-container').each(function() {
-    fitCardTextToContainer($(this).children('.card-container'));
-    $(this).css('display', 'none');
+// Reminder type is either 'scoring' or 'kanji' to enable, or null to disable.
+function toggleReminder(reminderType) {
+  var target = '#' + reminderType + '-help-text';
+  // If the reminder is currently visible, or we want to disable all the reminders, we're trying to disable it.
+  // If its not visible, we're trying to enable it.
+  var enable = true;
+  if (!reminderType || $(target).is(':visible')) {
+    var enable = false;
+  }
+  // Disable all the reminders before enabling any.
+  // Only want one reminder on the screen at a time.
+  $('.reminder-text').each(function() {
+    $(this).fadeOut(FADE_TIME);
   });
-  // Finally, make the top card visible.
-  revealTopReviewContainer();
+
+  if (enable) {
+    $(target).delay(FADE_TIME).fadeIn(FADE_TIME); // Delay to let the other one timeout if need be.
+  }
 }
 
+// Increases or decreases the size of the text in a review card to the size of the review container.
 function fitCardTextToContainer(cardContainer) {
   const minFontSize = 10;
   const maxFontSize = 75;
@@ -110,33 +185,11 @@ function fitCardTextToContainer(cardContainer) {
   });
 }
 
-function revealTopReviewContainer() {
-  $('.review-container').first().fadeToggle('fast');
-}
-
-function toggleReminder() {
-  $('#reminder-text').fadeToggle('fast');
-}
-
-function flipCard() {
-  $('.review-container').first().toggleClass('flipped');
-  FRONT_IS_UP = !$('.review-container').first().hasClass('flipped');
-}
-
-function updateCardsLeftText() {
-  if (CARDS_LEFT >= 1) {
-    $('#cards-left-banner').text(CARDS_LEFT);
-  }
-  else {
-    $('#cards-left-banner').text('All done! ✔')
-  }
-}
-
-// handle keyboard input here
+// Handler for keyboard controls
 function handleKeyboardInput(event) {
   switch(event.key) {
-    case 'Enter': // Show the help text
-      toggleReminder();
+    case 'Enter': // Show the kanji help text
+      toggleReminder('kanji');
       break;
 
     case ' ': // Flip the card

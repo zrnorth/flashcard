@@ -56,3 +56,14 @@ exports.linkAllKanjiInString = function linkAllKanjiInString(str = '') {
   }
   return retString;
 }
+
+exports.getAllKanjiInStringAsArray = function getAllKanjiInStringAsArray(str) {
+  var ret = [];
+  for (var i = 0; i < str.length; i++) {
+    var c = str.charAt(i);
+    if (this.isCharKanji(c)) {
+      ret.push(c);
+    }
+  }
+  return ret;
+}
