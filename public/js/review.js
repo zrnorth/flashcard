@@ -189,7 +189,7 @@ function fitCardTextToContainer(cardContainer) {
 function handleKeyboardInput(event) {
   switch(event.key) {
     case 'Enter': // Show the scoring help text
-      toggleReminder('scoring');
+      toggleReminder('kanji');
       break;
 
     case ' ': // Flip the card
