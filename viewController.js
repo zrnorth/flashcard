@@ -5,7 +5,7 @@ var kanjiHelper = require('./helpers/kanjiHelpers.js');
 require('./helpers/dateHelpers.js');
 
 // constant vals go here
-const maxCardsPerPage = 50;
+const maxCardsPerPage = 200;
 const validColumnsToOrderBy = ['ID', 'front', 'back', 'next_review', 'difficulty', 'reps'];
 
 // Helper to render failed pages
