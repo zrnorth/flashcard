@@ -36,7 +36,20 @@ create table cards(
     UNIQUE(FRONT, BACK, OWNER_ID)
 );
 
+create table kanji_lookup(
+    KLC_INDEX       INT PRIMARY KEY             NOT NULL,
+    KANJI           TEXT                        NOT NULL,
+    HEISIG          TEXT                        NOT NULL,
+    ENGLISH         TEXT
+);
+
 ```
+You can populate the kanji_lookup table with the kanji data by running this in psql:
+```
+COPY kanji_lookup FROM '/path/to/root/heisig.csv' DELIMITER ',' CSV HEADER;
+```
+
+
 Check `data/postgres.js:16` and make sure your local db information is input correctly. It should follow the format:
 `postgres://USERNAME:PASSWORD@localhost:PORT/DB_NAME`
 
