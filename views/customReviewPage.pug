@@ -1,18 +1,10 @@
 extends layout
 
-block head-extras
-  script(src='js/customReview.js')
-
 block content
   h1 Custom Review
-  .btn-group
-    .dropdown
-      button.btn.btn-default.dropdown-toggle(data-toggle='dropdown') How many reviews?
-        span.caret
-      ul.dropdown-menu
-        li
-          a(href='#', value='10') 10
-        li
-          a(href='#', value='20') 20
-        li
-          a(href='#', value='50') 50
+
+  form(method='POST' action='/customReview')
+    div Latest 10 #[input(name='numReviews', value='10', type='radio', checked)]
+    div Latest 20 #[input(name='numReviews', value='20', type='radio')]
+    div Latest 50 #[input(name='numReviews', value='50', type='radio')]
+    button.btn.btn-primary(type='submit') Go
