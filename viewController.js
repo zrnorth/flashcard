@@ -42,7 +42,8 @@ exports.review = function(req, res) {
     processedCards = linkKanjiToCards(processedCards);
 
     res.render('reviewPage', { 
-      cards: processedCards
+      cards: processedCards,
+      dryRun: false
     });
   });
 }
