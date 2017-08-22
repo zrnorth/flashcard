@@ -1,5 +1,6 @@
 var CARDS_LEFT = -1;
 var FRONT_IS_UP = true; // true: front is showing, false: back is showing. used for validating keyboard input
+var FADE_TIME = 200; // 200 ms, equivalent to 'fast'
 
 $(function() {
   initCards();
@@ -18,11 +19,11 @@ $(function() {
 
     else if ($(e.target).is('.reminder-button')) {
       e.preventDefault();
-      toggleReminder();
+      toggleReminder(e.target.value);
     }
 
-    else if ($(e.target).is('#reminder-text')) {
-      toggleReminder();
+    else if ($(e.target).is('.reminder-text')) {
+      $(e.target).fadeToggle(FADE_TIME);
     }
 
     else if ($(e.target).is('.front') || $(e.target).is('.back')) {
@@ -135,12 +136,28 @@ function fitCardTextToContainer(cardContainer) {
   });
 }
 
-function revealTopReviewContainer() {
-  $('.review-container').first().fadeToggle('fast');
+// Reminder type is either 'scoring' or 'kanji'
+function toggleReminder(reminderType) {
+  var target = '#' + reminderType + '-help-text';
+  // If the reminder is currently visible, we're trying to disable it.
+  // If its not visible, we're trying to enable it.
+  var enabled = true;
+  if ($(target).is(':visible')) {
+    var enabled = false;
+  }
+  // Disable all the reminders before enabling any.
+  // Only want one reminder on the screen at a time.
+  $('.reminder-text').each(function() {
+    $(this).fadeOut(FADE_TIME);
+  });
+
+  if (enabled) {
+    $(target).delay(FADE_TIME).fadeIn(FADE_TIME); // Delay to let the other one timeout if need be.
+  }
 }
 
-function toggleReminder() {
-  $('#reminder-text').fadeToggle('fast');
+function revealTopReviewContainer() {
+  $('.review-container').first().fadeToggle(FADE_TIME);
 }
 
 function flipCard() {
@@ -160,8 +177,8 @@ function updateCardsLeftText() {
 // handle keyboard input here
 function handleKeyboardInput(event) {
   switch(event.key) {
-    case 'Enter': // Show the help text
-      toggleReminder();
+    case 'Enter': // Show the scoring help text
+      toggleReminder('scoring');
       break;
 
     case ' ': // Flip the card
