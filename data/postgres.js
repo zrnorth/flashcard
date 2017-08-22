@@ -1,6 +1,5 @@
 const fs = require('fs');
 require('../helpers/dateHelpers.js');
-var kanjiHelpers = require('../helpers/kanjiHelpers.js');
 
 // Set bluebird as the default promise library for pgp.
 const promise = require('bluebird');
@@ -162,9 +161,8 @@ exports.getKanjiData = function(kanji) {
     .finally(pgp.end());
 };
 
-exports.getDataForAllKanjiInString = function(str) {
-  var kanjis = kanjiHelpers.getAllKanjiInStringAsArray(str);
-  return postgres.any('SELECT * FROM kanji_lookup WHERE KANJI = ANY ($1)', [kanjis])
+exports.getKanjiDataFromArray = function(kanjiArray) {
+  return postgres.any('SELECT * FROM kanji_lookup WHERE KANJI = ANY ($1)', [kanjiArray])
     .finally(pgp.end());
 }
 

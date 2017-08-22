@@ -28,11 +28,36 @@ $(function() {
     else if ($(e.target).is('.front') || $(e.target).is('.back')) {
       flipCard();
     }
+
+    else if ($(e.target).is('#kanji-help-btn')) {
+      e.preventDefault();
+      showKanjiHelp();
+    }
   });
 
   // Keypress handler
   document.addEventListener('keydown', handleKeyboardInput);
 });
+
+function showKanjiHelp() {
+  // temp
+  const payload = {
+    kanjiString: 'test山猫'
+  };
+  $.ajax({
+    url: '/getKanjiData',
+    type: 'POST',
+    contentType: 'application/json',
+    data: JSON.stringify(payload),
+    timeout: 5000,
+    success: function(data) {
+      console.log(data);
+    },
+    error: function(jqxhr, textStatus, errorThrown) {
+      console.error("ERROR: " + textStatus);
+    }
+  });
+}
 
 function logReview(id, responseQuality) {
   console.log('Logging score of ' + responseQuality + ' for card #' + id);

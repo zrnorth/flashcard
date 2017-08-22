@@ -36,6 +36,9 @@ router.post('/updateCardSide', viewController.restrict, viewController.updateCar
 /* POST a review for a given card */
 router.post('/logReview', viewController.restrict, viewController.logReview);
 
+/* POST a kanji string, returning a kanji data blob for the string */
+router.post('/getKanjiData', viewController.restrict, viewController.getKanjiData);
+
 /* GET the create card page */
 router.get('/createCards', viewController.restrict, viewController.createCards_GET);
 

@@ -45,6 +45,21 @@ exports.review = function(req, res) {
   });
 }
 
+// handles the POST to get the data blob for a kanji string
+exports.getKanjiData = function(req, res) {
+  dataController.getDataForAllKanjiInString(req.body.kanjiString).then(
+    function(data) {
+      res.status(200).send({
+        kanjiData: data
+      });
+    }, 
+    function(err) {
+      console.log('Got a view controller error: ' + err);
+      res.sendStatus(500);
+    }
+  );
+}
+
 exports.logReview = function(req, res) {
   dataController.logReview(req.body.id, req.body.responseQuality).then(function(nextReview) {
     console.log('Recorded score of ' + req.body.responseQuality + ' for card #' + req.body.id + '.');

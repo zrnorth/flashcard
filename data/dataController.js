@@ -1,7 +1,7 @@
 const db = require('./postgres.js');
 const SM2 = require('../helpers/SM2.js');
+const kanjiHelpers = require('../helpers/kanjiHelpers.js');
 require('../helpers/dateHelpers.js');
-
 
 exports.newCard = function(front, back, userId) {
   return db.addCard(front, back, 2.5, userId)
@@ -99,4 +99,17 @@ exports.getTotalNumberOfCards = function(userId) {
   return db.getTotalNumberOfCards(userId).then(function(data) {
     return data.count;
   });
+}
+
+exports.getDataForAllKanjiInString = function(str) {
+  var kanjis = kanjiHelpers.getAllKanjiInStringAsArray(str);
+
+  return db.getKanjiDataFromArray(kanjis)
+    .then(function(data) {
+      return data;
+    })
+    .catch(function(err) {
+      // error will throw if you try to get data for an empty array. just return [], nbd
+      return [];
+    });
 }
