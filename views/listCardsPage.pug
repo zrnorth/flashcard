@@ -7,7 +7,10 @@ block content
   h1 List Cards
   .cards-list
     .panel.panel-default
-      .panel-heading #[span.cards-count-helper-text Displaying cards #{offset+1}-#{offset+cards.length}] (#[span.cards-count #{totalCards}] total)
+      .panel-heading
+        span.cards-count-helper-text Displaying cards #{offset+1}-#{offset+cards.length} (#[span.cards-count #{totalCards}] total)
+        if currentPage != 'showAll'
+          a(href='/listCards/ID/showAll')  Show All
       table.table
         thead
           tr
@@ -24,7 +27,7 @@ block content
             each prettyName, dbName in dbNameToPrettyNameMap
               th
                 - var isOrderedField = (dbName == orderedBy);
-                a(href='/listCards/' + dbName + '/0/' class=(isOrderedField ? 'sorted' : '')) #{prettyName} #{(isOrderedField ? '↓' : '')}
+                a(href='/listCards/' + dbName + '/' + currentPage + '/' class=(isOrderedField ? 'sorted' : '')) #{prettyName} #{(isOrderedField ? '↓' : '')}
             th Delete?
         tbody
           each card in cards
@@ -41,12 +44,13 @@ block content
   if pages > 1
     // Handle the enabling / disabled the prev & next buttons
     -
+      const currentPageInt = parseInt(currentPage);
       const base = '/listCards/' + orderedBy + '/';
-      var previousLink = base + (currentPage-1);
+      var previousLink = base + (currentPageInt-1);
       var previousLinkDisabled = '';
-      var nextLink = base + (currentPage+1);
+      var nextLink = base + (currentPageInt+1);
       var nextLinkDisabled = '';
-      switch(currentPage) {
+      switch(currentPageInt) {
         case 0:
           previousLink = '#';
           previousLinkDisabled = 'disabled';
@@ -63,7 +67,7 @@ block content
           a.page-link(href=previousLink) Previous
 
         - for (var i = 0; i < pages; i++) {
-          - var active = (i===currentPage ? 'active' : '');
+          - var active = (i===currentPageInt ? 'active' : '');
           li.page-item(class=active)
             a.page-link(href=base+i) #{i}
         - }

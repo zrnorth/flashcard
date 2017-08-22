@@ -5,7 +5,8 @@ var kanjiHelper = require('./helpers/kanjiHelpers.js');
 require('./helpers/dateHelpers.js');
 
 // constant vals go here
-const maxCardsPerPage = 200;
+const defaultCardsPerPage = 200;
+const maxCardsPerPage = 10000;
 const validColumnsToOrderBy = ['ID', 'front', 'back', 'next_review', 'difficulty', 'reps'];
 
 // Helper to render failed pages
@@ -160,21 +161,30 @@ exports.listCards = function(req, res) {
     return;
   }
 
-  var offset = req.params.page * maxCardsPerPage;
-  dataController.getAllCardsForUser(req.session.user, maxCardsPerPage, offset, orderBy).then(function(cards) {
+  var cardsPerPage, offset;
+  if (req.params.page === 'showAll') {
+    cardsPerPage = maxCardsPerPage;
+    offset = 0;
+  }
+  else {
+    cardsPerPage = defaultCardsPerPage;
+    offset = parseInt(req.params.page) * defaultCardsPerPage;
+  }
+
+  dataController.getAllCardsForUser(req.session.user, cardsPerPage, offset, orderBy).then(function(cards) {
     dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
         return;
       }
-      var totalPagesNeeded = Math.ceil(totalCards / maxCardsPerPage);
+      var totalPagesNeeded = Math.ceil(totalCards / cardsPerPage);
       res.render('listCardsPage', {
         cards: unescapedCards(cards),
         totalCards: totalCards,
         offset: offset,
         orderedBy: orderBy,
         pages: totalPagesNeeded,
-        currentPage: parseInt(req.params.page)
+        currentPage: req.params.page
       });
     });
   });  
