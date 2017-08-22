@@ -112,6 +112,11 @@ exports.getCard = function(id) {
     .finally(pgp.end());
 };
 
+exports.getCards = function(idsArray) {
+  return postgres.any('SELECT * FROM cards WHERE ID = ANY ($1)', [idsArray])
+    .finally(pgp.end());
+}
+
 exports.getCardByFront = function(front) {
   return postgres.any('SELECT * FROM cards where FRONT=$1', [front])
     .finally(pgp.end());

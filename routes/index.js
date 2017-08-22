@@ -53,6 +53,9 @@ router.get('/listCards', viewController.restrict, function(req, res) {
 /* GET the list of all cards at a specific page with a given ordering */
 router.get('/listCards/:orderBy/:page', viewController.restrict, viewController.listCards);
 
+/* GET the custom review page */
+router.get('/customReview', viewController.restrict, viewController.customReview);
+
 /* DELETE a card by id */
 router.delete('/deleteCard', viewController.restrict, viewController.deleteCard);
 

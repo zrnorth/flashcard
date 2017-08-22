@@ -34,6 +34,7 @@ var linkKanjiToCards = function(cards) {
   return cards;
 }
 
+// Load the reviews page
 exports.review = function(req, res) {
   dataController.getTodaysCards(req.session.user).then(function(cards) {
 
@@ -74,6 +75,10 @@ exports.logReview = function(req, res) {
     console.log(err);
     res.sendStatus(500);
   });
+}
+
+exports.customReview = function(req, res) {
+  res.render('customReviewPage');
 }
 
 exports.updateCardSide = function(req, res) {
