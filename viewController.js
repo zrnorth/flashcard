@@ -34,16 +34,36 @@ var linkKanjiToCards = function(cards) {
   return cards;
 }
 
+// Helper to get cards ready for display.
+var processCards = function(cards) {
+  return linkKanjiToCards(unescapedCards(cards));
+}
+
+// Load the reviews page
 exports.review = function(req, res) {
   dataController.getTodaysCards(req.session.user).then(function(cards) {
 
-    var processedCards = unescapedCards(cards);
-    processedCards = linkKanjiToCards(processedCards);
-
     res.render('reviewPage', { 
-      cards: processedCards
+      cards: processCards(cards),
+      dryRun: false
     });
   });
+}
+
+// Render the custom review start page
+exports.customReview_GET = function(req, res) {
+  res.render('customReviewPage');
+}
+
+// Start a custom review -- basically just the reviews page in dry run mode with specified cards.
+exports.customReview_POST = function(req, res) {
+  // for now we just doing id, descending so we get the latest ones
+  dataController.getAllCardsForUser(req.session.user, parseInt(req.body.numReviews), 0, 'ID DESC').then(function(cards) {
+    res.render('reviewPage', {
+      cards: processCards(cards),
+      dryRun: true
+    });
+  })
 }
 
 // handles the POST to get the data blob for a kanji string
@@ -75,6 +95,8 @@ exports.logReview = function(req, res) {
     res.sendStatus(500);
   });
 }
+
+
 
 exports.updateCardSide = function(req, res) {
   // Update the header to not cache anything

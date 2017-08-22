@@ -1,8 +1,10 @@
-var CARDS_LEFT = -1;
+var CARDS_LEFT = -1; // This gets set inside the view (reviewPage.pug)
+var DRY_RUN = false; // If dry run is set to true (by the view controller), any review logging won't be saved. Used for custom reviews.
 var FRONT_IS_UP = true; // true: front is showing, false: back is showing. used for validating keyboard input
-var FADE_TIME = 200; // 200 ms, equivalent to 'fast'
+const FADE_TIME = 200; // 200 ms, equivalent to 'fast'
 
 $(function() {
+  console.log('dry run? ' + DRY_RUN);
   initCards();
 
   // We handle click handlers in this verbose way because we want some odd behavior:
@@ -44,17 +46,23 @@ function initCards() {
     $(this).css('display', 'none');
   });
   // Finally, make the first card visible.
-  nextCard();
+  showNextCard();
 }
 
-function nextCard() {
+// Helper function. returns the jquery selector for the topmost (currently displayed) card
+function topCard() {
+  return $('.review-container').first();
+}
+
+function showNextCard() {
   // Make the top card visible
-  $('.review-container').first().fadeToggle(FADE_TIME);
+  topCard().fadeToggle(FADE_TIME);
 
   // Populate the kanji help card for the newly flipped top card.
   const payload = {
     kanjiString: $('.back').first().text()
   };
+
   $.ajax({
     url: '/getKanjiData',
     type: 'POST',
@@ -76,7 +84,7 @@ function nextCard() {
 // Given an array of kanjiData, formats it into a nice string for displaying in the reminder.
 function getFormattedKanjiHelpText(kanjiDataArray) {
   var outputHTML = '';
-  if (kanjiDataArray.length === 0) {
+  if (!kanjiDataArray || kanjiDataArray.length === 0) {
     outputHTML = '<p>No kanji.</p>';
   }
   for (var i = 0; i < kanjiDataArray.length; i++) {
@@ -87,12 +95,11 @@ function getFormattedKanjiHelpText(kanjiDataArray) {
 }
 
 function flipCard() {
-  $('.review-container').first().toggleClass('flipped');
-  FRONT_IS_UP = !$('.review-container').first().hasClass('flipped');
+  topCard().toggleClass('flipped');
+  FRONT_IS_UP = !topCard().hasClass('flipped');
 }
 
 function logReview(id, responseQuality) {
-  console.log('Logging score of ' + responseQuality + ' for card #' + id);
   const payload = {
     id: id,
     responseQuality: responseQuality
@@ -101,37 +108,22 @@ function logReview(id, responseQuality) {
   // First, close all reminders
   toggleReminder();
 
+  // If we are doing a dry run (custom review) don't actually fire the AJAX, just continue like it succeeded.
+  if (DRY_RUN) {
+    var repeat = (responseQuality < 3);
+    logReviewSuccess(repeat);
+    return;
+  }
+
   $.ajax({
     url: '/logReview',
     type: 'POST',
     contentType: 'application/json',
     data: JSON.stringify(payload),
     timeout: 5000, // 5 seconds
-    success: function(data) {
-      var afterFadingOut; // Once we fade out, behavior differs based on whether we got the card right or not.
-      if (data.repeat) { // we got the card wrong, so move it to the end of the reviews list
-        afterFadingOut = function() {
-          flipCard();
-          $(this).appendTo('.reviews');
-          nextCard();
-        }
-      }
-      else {
-        // Done with it! remove the card from the page
-        CARDS_LEFT -= 1;
-        afterFadingOut = function() {
-          $(this).remove();
-          nextCard();
-        }
-      }
-      $('.review-container').first().fadeOut(80, afterFadingOut);
-      // Update the number of cards left, displayed at the top of the screen.
-      if (CARDS_LEFT >= 1) {
-        $('#cards-left-banner').text(CARDS_LEFT);
-      }
-      else {
-        $('#cards-left-banner').text('All done! ✔')
-      }
+    success: function(res) {
+      console.log('Logged score of ' + responseQuality + ' for card #' + id);
+      logReviewSuccess(res.repeat);
     },
     error: function(jqxhr, textStatus, errorThrown) {
       console.error("ERROR: " + textStatus);
@@ -139,6 +131,35 @@ function logReview(id, responseQuality) {
       $('#cards-left-banner').css('color', 'red');
     }
   });
+}
+
+// Called when we log a review to the server and receive a 200 in response.
+// Gets the next card ready, and sets this one to repeat if need be.
+var logReviewSuccess = function(shouldRepeatCard) {
+  var afterFadingOut; // Once we fade out, behavior differs based on whether we got the card right or not.
+  if (shouldRepeatCard) { // we got the card wrong (or we want to repeat it), so move it to the end of the reviews list
+    afterFadingOut = function() {
+      flipCard();
+      topCard().appendTo('.reviews');
+      showNextCard();
+    }
+  }
+  else {
+    // Done with it! remove the card from the page
+    CARDS_LEFT -= 1;
+    afterFadingOut = function() {
+      topCard().remove();
+      showNextCard();
+    }
+  }
+  topCard().fadeOut(80, afterFadingOut);
+  // Update the number of cards left, displayed at the top of the screen.
+  if (CARDS_LEFT >= 1) {
+    $('#cards-left-banner').text(CARDS_LEFT);
+  }
+  else {
+    $('#cards-left-banner').text('All done! ✔')
+  }
 }
 
 // Reminder type is either 'scoring' or 'kanji' to enable, or null to disable.
