@@ -87,9 +87,7 @@ button {
   box-sizing: border-box;
   border: 2px solid grey;
   border-radius: 10px;
-  font-size: 12px;
   text-align: left;
-  height: 162px;
   width: 416px;
   margin: 25px auto;
   display: none;
@@ -98,6 +96,17 @@ button {
 
 .reminder-text p {
   margin-left: 10px
+}
+
+#scoring-help-text {
+  font-size: 12px;
+  height: 162px;
+}
+
+#kanji-help-text {
+  font-size: 20px;
+  min-height: 162px;
+  max-height: 2000px;
 }
 
 /* Create cards page */

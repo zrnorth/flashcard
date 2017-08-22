@@ -54,8 +54,11 @@ exports.getKanjiData = function(req, res) {
       });
     }, 
     function(err) {
-      console.log('Got a view controller error: ' + err);
-      res.sendStatus(500);
+      // You can get an error if you just passed in a string with no kanji.
+      // Should fix this. For now just don't do anything.
+      res.status(200).send({
+        kanjiData: []
+      });
     }
   );
 }

@@ -104,12 +104,5 @@ exports.getTotalNumberOfCards = function(userId) {
 exports.getDataForAllKanjiInString = function(str) {
   var kanjis = kanjiHelpers.getAllKanjiInStringAsArray(str);
 
-  return db.getKanjiDataFromArray(kanjis)
-    .then(function(data) {
-      return data;
-    })
-    .catch(function(err) {
-      // error will throw if you try to get data for an empty array. just return [], nbd
-      return [];
-    });
+  return db.getKanjiDataFromArray(kanjis);
 }
