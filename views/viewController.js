@@ -1,8 +1,8 @@
-var dataController = require('./data/dataController');
-var loginController = require('./data/loginController');
+var dataController = require('../data/dataController');
+var loginController = require('../data/loginController');
 var validator = require('validator');
-var kanjiHelper = require('./helpers/kanjiHelpers.js');
-require('./helpers/dateHelpers.js');
+var kanjiHelper = require('../helpers/kanjiHelpers.js');
+require('../helpers/dateHelpers.js');
 
 // constant vals go here
 const defaultCardsPerPage = 200;
