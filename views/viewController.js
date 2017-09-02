@@ -196,9 +196,11 @@ exports.createCards_POST = function(req, res) {
 // List all the cards
 exports.listCards = function(req, res) {
   // Validate that we are ordering by a valid column.
-  const orderBy = req.params.orderBy;
-  // if dbNameToPrettyNameMap[orderBy] is undefined, its not in the db as a col, so error.
-  if (!orderBy || !dbNameToPrettyNameMap[orderBy]) {
+  var orderBy = req.params.orderBy;
+
+  if (!orderBy ||
+      !dbNameToPrettyNameMap[orderBy] || // if dbNameToPrettyNameMap[orderBy] is undefined, its not in the db as a col, so error.
+      !((req.params.ascendingOrDescending === 'asc' || req.params.ascendingOrDescending === 'desc'))) {
     res.sendStatus('404');
     return;
   }
@@ -213,7 +215,8 @@ exports.listCards = function(req, res) {
     offset = parseInt(req.params.page) * defaultCardsPerPage;
   }
 
-  dataController.getAllCardsForUser(req.session.user, cardsPerPage, offset, orderBy).then(function(cards) {
+  dataController.getAllCardsForUser(req.session.user, cardsPerPage, offset, orderBy + ' ' + req.params.ascendingOrDescending)
+    .then(function(cards) {
     dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
@@ -226,6 +229,7 @@ exports.listCards = function(req, res) {
         totalCards: totalCards,
         offset: offset,
         orderedBy: orderBy,
+        ascendingOrDescending: req.params.ascendingOrDescending,
         pages: totalPagesNeeded,
         currentPage: req.params.page
       });
