@@ -10,15 +10,17 @@ block content
       .panel-heading
         span.cards-count-helper-text Displaying cards #{offset+1}-#{offset+cards.length} (#[span.cards-count #{totalCards}] total)
         if currentPage != 'showAll'
-          a(href='/listCards/ID/showAll')  Show All
+          a(href='/listCards/ID/asc/showAll')  Show All
       table.table
         thead
           tr
             each prettyName, dbName in dbNameToPrettyNameMap
               th
                 - var isOrderedField = (dbName == orderedBy);
-                - var textToDisplay = prettyName + (isOrderedField ? '↓' : '');
-                a(href='/listCards/' + dbName + '/' + currentPage + '/', class=(isOrderedField ? 'sorted' : ''))= textToDisplay
+                - var classText = isOrderedField ? 'sorted' : '';
+                - var displayText = prettyName + (isOrderedField ? '↓' : '');
+                - var linkText = `/listCards/${dbName}/asc/${currentPage}`;
+                a(href=linkText, class=classText)= displayText
             th Delete?
         tbody
           each card in cards
