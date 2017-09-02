@@ -10,7 +10,9 @@ block content
       .panel-heading
         span.cards-count-helper-text Displaying cards #{offset+1}-#{offset+cards.length} (#[span.cards-count #{totalCards}] total)
         if currentPage != 'showAll'
-          a(href='/listCards/ID/asc/showAll')  Show All
+          a(href=`/listCards/${orderedBy}/${ascendingOrDescending}/showAll`)  Show all
+        else
+          a(href=`/listCards/${orderedBy}/${ascendingOrDescending}/0`)  Show some
       table.table
         thead
           tr
