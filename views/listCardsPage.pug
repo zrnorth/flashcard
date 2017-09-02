@@ -14,20 +14,11 @@ block content
       table.table
         thead
           tr
-            -
-              var dbNameToPrettyNameMap = {
-                'ID': '#',
-                'front': 'Front',
-                'back': 'Back',
-                'next_review': 'Next Review Date',
-                'difficulty': 'Difficulty (lower scores are harder)',
-                'reps': 'Reps'
-              };
-
             each prettyName, dbName in dbNameToPrettyNameMap
               th
                 - var isOrderedField = (dbName == orderedBy);
-                a(href='/listCards/' + dbName + '/' + currentPage + '/' class=(isOrderedField ? 'sorted' : '')) #{prettyName} #{(isOrderedField ? '↓' : '')}
+                - var textToDisplay = prettyName + (isOrderedField ? '↓' : '');
+                a(href='/listCards/' + dbName + '/' + currentPage + '/', class=(isOrderedField ? 'sorted' : ''))= textToDisplay
             th Delete?
         tbody
           each card in cards

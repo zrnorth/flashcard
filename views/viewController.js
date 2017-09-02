@@ -7,7 +7,14 @@ require('../helpers/dateHelpers.js');
 // constant vals go here
 const defaultCardsPerPage = 200;
 const maxCardsPerPage = 10000;
-const validColumnsToOrderBy = ['ID', 'front', 'back', 'next_review', 'difficulty', 'reps'];
+const dbNameToPrettyNameMap = {
+  'ID': '#',
+  'front': 'Front',
+  'back': 'Back',
+  'next_review': 'Next Review Date',
+  'difficulty': 'Difficulty (lower scores are harder)',
+  'reps': 'Reps'
+};
 
 // Helper to render failed pages
 var failWithError = function(res, pageName, error) {
@@ -189,8 +196,9 @@ exports.createCards_POST = function(req, res) {
 // List all the cards
 exports.listCards = function(req, res) {
   // Validate that we are ordering by a valid column.
-  var orderBy = req.params.orderBy;
-  if (!orderBy || !validColumnsToOrderBy.includes(orderBy)) {
+  const orderBy = req.params.orderBy;
+  // if dbNameToPrettyNameMap[orderBy] is undefined, its not in the db as a col, so error.
+  if (!orderBy || !dbNameToPrettyNameMap[orderBy]) {
     res.sendStatus('404');
     return;
   }
@@ -213,6 +221,7 @@ exports.listCards = function(req, res) {
       }
       var totalPagesNeeded = Math.ceil(totalCards / cardsPerPage);
       res.render('listCardsPage', {
+        dbNameToPrettyNameMap: dbNameToPrettyNameMap,
         cards: unescapedCards(cards),
         totalCards: totalCards,
         offset: offset,
