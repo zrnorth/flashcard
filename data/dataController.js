@@ -103,5 +103,8 @@ exports.getTotalNumberOfCards = function(userId) {
 
 exports.getDataForAllKanjiInString = function(str) {
   var kanjis = kanjiHelpers.getAllKanjiInStringAsArray(str);
+  if (kanjis.length === 0) { // Don't even make the call if no kanji in string, just resolve right away with an empty array.
+    return Promise.resolve([]);
+  }
   return db.getKanjiDataFromArray(kanjis);
 }
