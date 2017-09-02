@@ -47,11 +47,11 @@ router.post('/createCards', viewController.restrict, viewController.createCards_
 
 /* GET the list of all cards */
 router.get('/listCards', viewController.restrict, function(req, res) {
-  res.redirect('/listCards/ID/0');
+  res.redirect('/listCards/ID/asc/0');
 });
 
 /* GET the list of all cards at a specific page with a given ordering */
-router.get('/listCards/:orderBy/:page', viewController.restrict, viewController.listCards);
+router.get('/listCards/:orderBy/:ascendingOrDescending/:page', viewController.restrict, viewController.listCards);
 
 /* GET the custom review page */
 router.get('/customReview', viewController.restrict, viewController.customReview_GET);

@@ -7,7 +7,14 @@ require('../helpers/dateHelpers.js');
 // constant vals go here
 const defaultCardsPerPage = 200;
 const maxCardsPerPage = 10000;
-const validColumnsToOrderBy = ['ID', 'front', 'back', 'next_review', 'difficulty', 'reps'];
+const dbNameToPrettyNameMap = {
+  'ID': '#',
+  'front': 'Front',
+  'back': 'Back',
+  'next_review': 'Next Review Date',
+  'difficulty': 'Difficulty (lower scores are harder)',
+  'reps': 'Reps'
+};
 
 // Helper to render failed pages
 var failWithError = function(res, pageName, error) {
@@ -190,7 +197,10 @@ exports.createCards_POST = function(req, res) {
 exports.listCards = function(req, res) {
   // Validate that we are ordering by a valid column.
   var orderBy = req.params.orderBy;
-  if (!orderBy || !validColumnsToOrderBy.includes(orderBy)) {
+
+  if (!orderBy ||
+      !dbNameToPrettyNameMap[orderBy] || // if dbNameToPrettyNameMap[orderBy] is undefined, its not in the db as a col, so error.
+      !((req.params.ascendingOrDescending === 'asc' || req.params.ascendingOrDescending === 'desc'))) {
     res.sendStatus('404');
     return;
   }
@@ -205,7 +215,8 @@ exports.listCards = function(req, res) {
     offset = parseInt(req.params.page) * defaultCardsPerPage;
   }
 
-  dataController.getAllCardsForUser(req.session.user, cardsPerPage, offset, orderBy).then(function(cards) {
+  dataController.getAllCardsForUser(req.session.user, cardsPerPage, offset, orderBy + ' ' + req.params.ascendingOrDescending)
+    .then(function(cards) {
     dataController.getTotalNumberOfCards(req.session.user).then(function(totalCards) {
       if (offset > totalCards) {
         res.sendStatus('404');
@@ -213,10 +224,12 @@ exports.listCards = function(req, res) {
       }
       var totalPagesNeeded = Math.ceil(totalCards / cardsPerPage);
       res.render('listCardsPage', {
+        dbNameToPrettyNameMap: dbNameToPrettyNameMap,
         cards: unescapedCards(cards),
         totalCards: totalCards,
         offset: offset,
         orderedBy: orderBy,
+        ascendingOrDescending: req.params.ascendingOrDescending,
         pages: totalPagesNeeded,
         currentPage: req.params.page
       });

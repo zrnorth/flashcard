@@ -10,24 +10,30 @@ block content
       .panel-heading
         span.cards-count-helper-text Displaying cards #{offset+1}-#{offset+cards.length} (#[span.cards-count #{totalCards}] total)
         if currentPage != 'showAll'
-          a(href='/listCards/ID/showAll')  Show All
+          a(href=`/listCards/${orderedBy}/${ascendingOrDescending}/showAll`)  Show all
+        else
+          a(href=`/listCards/${orderedBy}/${ascendingOrDescending}/0`)  Show some
       table.table
         thead
           tr
-            -
-              var dbNameToPrettyNameMap = {
-                'ID': '#',
-                'front': 'Front',
-                'back': 'Back',
-                'next_review': 'Next Review Date',
-                'difficulty': 'Difficulty (lower scores are harder)',
-                'reps': 'Reps'
-              };
-
             each prettyName, dbName in dbNameToPrettyNameMap
               th
-                - var isOrderedField = (dbName == orderedBy);
-                a(href='/listCards/' + dbName + '/' + currentPage + '/' class=(isOrderedField ? 'sorted' : '')) #{prettyName} #{(isOrderedField ? '↓' : '')}
+                -
+                  const isOrderedField = (dbName == orderedBy);
+                  const classText = isOrderedField ? 'sorted' : '';
+                  var displayText = prettyName;
+                  if (isOrderedField) {
+                    if (ascendingOrDescending === 'asc') {
+                      displayText += '↓';
+                    }
+                    else {
+                      displayText += '↑';
+                    }
+                  }
+                  // Need to determine which to put in the link. Should be 'desc' if this col is selected and currently 'asc'
+                  const ascOrDescText = (isOrderedField && ascendingOrDescending === 'asc') ? 'desc' : 'asc';
+                  var linkText = `/listCards/${dbName}/${ascOrDescText}/${currentPage}`;
+                a(href=linkText, class=classText)= displayText
             th Delete?
         tbody
           each card in cards
@@ -45,7 +51,7 @@ block content
     // Handle the enabling / disabled the prev & next buttons
     -
       const currentPageInt = parseInt(currentPage);
-      const base = '/listCards/' + orderedBy + '/';
+      const base = `/listCards/${orderedBy}/${ascendingOrDescending}/`;
       var previousLink = base + (currentPageInt-1);
       var previousLinkDisabled = '';
       var nextLink = base + (currentPageInt+1);
