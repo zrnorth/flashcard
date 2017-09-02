@@ -57,8 +57,20 @@ exports.customReview_GET = function(req, res) {
 
 // Start a custom review -- basically just the reviews page in dry run mode with specified cards.
 exports.customReview_POST = function(req, res) {
-  // for now we just doing id, descending so we get the latest ones
-  dataController.getAllCardsForUser(req.session.user, parseInt(req.body.numReviews), 0, 'ID DESC').then(function(cards) {
+  // Gotta convert the html review type string to a DB ORDER BY query string.
+  var orderBy;
+  switch(req.body.reviewType) {
+    case 'newest':
+      orderBy = 'ID DESC';
+      break;
+    case 'hardest':
+      orderBy = 'DIFFICULTY';
+      break;
+    case 'random':
+      orderBy = 'RANDOM()';
+      break;
+  }
+  dataController.getAllCardsForUser(req.session.user, parseInt(req.body.numReviews || 0), 0, orderBy).then(function(cards) {
     res.render('reviewPage', {
       cards: processCards(cards),
       dryRun: true
