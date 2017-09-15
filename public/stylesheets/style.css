@@ -108,6 +108,12 @@ button {
   margin-left: 10px
 }
 
+.reminder-text button {
+  display: block;
+  margin: auto;
+  margin-bottom: 10px;
+}
+
 #scoring-help-text {
   font-size: 12px;
   height: 162px;
@@ -141,6 +147,6 @@ td {
   color: #333;
 }
 
-.table a.sorted {
+.table .sorted {
   color: #027f80;
 }

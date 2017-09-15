@@ -32,6 +32,7 @@ block content
           .score-button-row
             button.btn.btn-warning.reminder-button(value='scoring') ?
             button.btn.btn-warning.reminder-button(value='kanji') 漢字
+            button.btn.btn-warning.reminder-button(value='other') ...
 
   #scoring-help-text.reminder-text
     p 5 - perfect response
@@ -42,3 +43,5 @@ block content
     p 0 - complete blackout
   #kanji-help-text.reminder-text
     p.text-inner There was an error loading the kanji help text.
+  #other-help-text.reminder-text
+    button.btn.btn-danger.btn-delete Delete this card

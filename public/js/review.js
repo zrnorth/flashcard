@@ -162,7 +162,7 @@ var logReviewSuccess = function(shouldRepeatCard) {
   }
 }
 
-// Reminder type is either 'scoring' or 'kanji' to enable, or null to disable.
+// Reminder type is either 'scoring', 'kanji', or 'other' to enable, or null to disable.
 function toggleReminder(reminderType) {
   var target = '#' + reminderType + '-help-text';
   // If the reminder is currently visible, or we want to disable all the reminders, we're trying to disable it.
